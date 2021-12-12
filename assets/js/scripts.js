@@ -25,7 +25,11 @@
 		tempMax: find('.js_temp_max .value'),
 		chanceOfRain: find('.js_chance_of_rain .value'),
 		uvIndex: find('.js_uv_index .value'),
-		icon: find('.js_weather_icon')
+		wind: find('.js_wind .value'),
+		sunrise: find('.js_sunrise .value'),
+		sunset: find('.js_sunset .value'),
+		icon: find('.js_weather_icon'),
+		forecastList: find('.js_forecast_list')
 	};
 
 	const forecastElems = {
@@ -56,7 +60,7 @@
 		let day = today.getDay();
 		let fullDate = today.getDate() + ', ' + months[(today.getMonth())] + ' ' + today.getFullYear();
 
-		elements.date.textContent = weekdays[day] + " " +  fullDate;
+		elements.date.textContent = weekdays[day] + " " + fullDate;
 	}
 
 	/**
@@ -66,7 +70,7 @@
 		fetch(unsplashUrl)
 			.then(response => response.json())
 			.then(data => {
-				displayImage(data);
+				// displayImage(data);
 			}).catch(function(error) {
 				console.log(error);
 			});
@@ -117,11 +121,14 @@
 		/* Current weather condition */
 		elements.temp.textContent = Math.round(weatherData.current.temp, 2);
 		elements.description.textContent = weatherData.current.weather[0].description;
+
 		elements.tempMin.textContent = Math.round(weatherData.daily[0].temp.min, 2);
 		elements.tempMax.textContent = Math.round(weatherData.daily[0].temp.max, 2);
 		elements.chanceOfRain.textContent = Math.round(weatherData.hourly[0].pop * 100, 2) + '%';
 		elements.uvIndex.textContent = weatherData.current.uvi;
-
+		elements.wind.textContent = weatherData.current.wind_deg + "deg / " + weatherData.current.wind_speed;
+		elements.sunrise.textContent = weatherData.current.sunrise;
+		elements.sunset.textContent = weatherData.current.sunset;
 
 		// elements.icon.src = 'weather_3d/' +weatherData.current.weather[0].icon + '.png';
 		/* Forecast */
@@ -138,19 +145,66 @@
 	 * Display forecast data
 	 * @param {object} weatherData Fetched weather data object containing current condition and 8 days forecast
 	 */
-	function createForecastList(weatherData) {
+	// function createForecastList(weatherData) {
+	//
+	// 	const listItem = document.querySelector('.day');
+	// 	let dayMin = listItem.querySelector('.js_day_min');
+	// 	let dayMax = listItem.querySelector('.js_day_max');
+	// 	let dayDay = listItem.querySelector('.js_day_day');
+	// 	let dayIcon = listItem.querySelector('.js_day_icon');
+	// 	// let dayMin = listItem.querySelector('.js_day_min');
+	//
+	//
+	// 	dayMin.textContent = Math.round(weatherData.daily[1].temp.min,2) + '°';
+	// 	dayMax.textContent = Math.round(weatherData.daily[1].temp.max,2) + '°';
+	// 	dayIcon.src = 'assets/icons/weather/' + weatherData.daily[1].weather[0].icon + '@2x.png';
+	// }
 
-		const listItem = document.querySelector('.day');
-		let dayMin = listItem.querySelector('.js_day_min');
-		let dayMax = listItem.querySelector('.js_day_max');
-		let dayDay = listItem.querySelector('.js_day_day');
-		let dayIcon = listItem.querySelector('.js_day_icon');
-		// let dayMin = listItem.querySelector('.js_day_min');
+	const createForecastList = (weatherData) => {
+
+		let dailyWeather = weatherData.daily;
+
+		dailyWeather.forEach(function(day, index) {
+
+			// skip first day, as it is today
+			if (index !== 0) {
+
+				let listItem = `<li class="day" data-idx="${index}">
+ 					<span class="day_day js_day_day">${getDayFromTimestamp(day.dt)}</span>
+ 					<img class="day_icon js_day_icon" width="60" src="assets/icons/weather/${day.weather[0].icon}@2x.png" />
+ 					<span class="day_min_max">
+ 						<span class="day_max js_day_max">${Math.round(day.temp.max,2)}°</span>
+ 						<span class="day_min js_day_min">${Math.round(day.temp.min,2)}°</span>
+ 					</span>
+ 					<span class="day_description js_day_description">${day.weather[0].main}</span>
+ 				</li>`;
+
+				elements.forecastList.appendChild(forecastItemnode(listItem));
+			}
+
+		});
+
+	};
 
 
-		dayMin.textContent = Math.round(weatherData.daily[1].temp.min,2) + '°';
-		dayMax.textContent = Math.round(weatherData.daily[1].temp.max,2) + '°';
-		dayIcon.src = 'assets/icons/weather/' + weatherData.daily[1].weather[0].icon + '@2x.png';
+	const forecastItemnode = (item) => {
+		var template = document.createElement('template');
+		template.innerHTML = item;
+		return template.content.childNodes[0];
+	};
+
+
+	/* Return Day from Timestamp */
+	function getDayFromTimestamp(timestamp) {
+		var date;
+		var dayOfWeek;
+		var daysShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+		date = new Date(timestamp * 1000);
+		dayOfWeek = daysShort[date.getDay()];
+
+		return dayOfWeek;
 	}
+
 
 })();

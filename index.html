@@ -24,7 +24,7 @@
 							<div class="date js_date"></div>
 						</div>
 
-						<!-- Current Condition -->
+
 						<!-- <div class="weather_icon_outer">
 							<img class="weather_icon js_weather_icon" width="150" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=" />
 						</div> -->
@@ -32,43 +32,60 @@
 						<div class="description js_description">--</div>
 					</div>
 
-					<div class="right_col col">
-						<div class="temp_max js_temp_max box">
-							<div class="title">Temp Max</div>
-							<div class="value js_value"></div>
-						</div>
-						<div class="temp_min js_temp_min box">
-							<div class="title">Temp Min</div>
-							<div class="value js_value"></div>
-						</div>
-						<div class="chance_of_rain js_chance_of_rain box">
-							<div class="title">Chance of Rain</div>
-							<div class="value js_value"></div>
-						</div>
-						<div class="uv_index js_uv_index box">
-							<div class="title">UV Index</div>
-							<div class="value js_value"></div>
-						</div>
-					</div>
+
 
 					<div class="author js_author"></div>
 
 				</div>
 
 				<!-- Forecast 7 Days -->
-				<div class="forecast">
-					<ul class="forecast_list js_forecast_list">
-						<li class="day" data-idx="0">
-							<span class="day_day js_day_day">25 Today</span>
-							<img class="day_icon js_day_icon" width="60" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=" />
-							<span class="day_min_max">
-								<span class="day_max js_day_max">20°</span>
-								<span class="day_min js_day_min">13°/</span>
-							</span>
-							<span class="day_description js_day_description">Clouds</span>
-						</li>
-					</ul>
+				<div class="details_and_forecast">
+
+					<!-- Current Condition Details -->
+					<div class="current_details col">
+						<h2 class="heading">Highlights</h2>
+
+						<div class="detail_data">
+							<div class="temp_max js_temp_max box">
+								<div class="title">Temp Max</div>
+								<div class="value js_value"></div>
+							</div>
+							<div class="temp_min js_temp_min box">
+								<div class="title">Temp Min</div>
+								<div class="value js_value"></div>
+							</div>
+							<div class="chance_of_rain js_chance_of_rain box">
+								<div class="title">Chance of Rain</div>
+								<div class="value js_value"></div>
+							</div>
+							<div class="uv_index js_uv_index box hidden">
+								<div class="title">UV Index</div>
+								<div class="value js_value"></div>
+							</div>
+							<div class="wind js_wind box">
+								<div class="title">Wind</div>
+								<div class="value js_value"></div>
+							</div>
+							<div class="sunrise js_sunrise box">
+								<div class="title">Sunrise</div>
+								<div class="value js_value"></div>
+							</div>
+							<div class="sunset js_sunset box">
+								<div class="title">Sunset</div>
+								<div class="value js_value"></div>
+							</div>
+						</div>
+					</div>
+
+					<div class="forecast col">
+						<h2 class="heading">7 Days <span class="thin">Forecast</span></h2>
+						<ul class="forecast_list js_forecast_list"></ul>
+					</div>
+
 				</div>
+
+
+
 
 			</div>
 		</div>
