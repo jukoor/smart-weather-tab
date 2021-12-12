@@ -1,0 +1,15 @@
+{
+  "manifest_version": 1,
+  "name": "Weather Tab",
+  "version": "1.0",
+  "description": "Display Weather",
+  "author": "Julian Orth",
+  "chrome_url_overrides" : {
+    "newtab": "index.html"
+  },
+  "permissions": [
+    "storage",
+		"geolocation",
+    "https://api.hackernoon.com/"
+  ]
+}
