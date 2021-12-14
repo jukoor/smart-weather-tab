@@ -49,7 +49,7 @@ div {
 	z-index: 1;
 	left: 50%;
 	transform: translateX(-50%);
-	width: 85vw;
+	width: 80vw;
 	min-width: 300px;
 	max-width: 95vw;
 	border-radius: 25px;
@@ -84,7 +84,7 @@ div {
 	display: flex;
 	flex-direction: row;
 	padding: 2rem;
-	margin-bottom: 2rem;
+	margin-bottom: 5rem;
 }
 
 .app .weather .current_weather .col {
@@ -203,9 +203,30 @@ div {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 0.8em 2rem;
+	padding: 0.8em 2rem 0.8rem 5rem;
 	border-radius: 25px;
-	margin-bottom: 1rem;
+	margin-bottom: 0.8rem;
+	position: relative;
+	border: 2px solid transparent;
+	cursor: pointer;
+}
+
+.app .forecast_list .day.active {
+	border-color: #333;
+}
+
+.app .forecast_list .day::before {
+	content: attr(data-day);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	left: 0.8rem;
+	background: #333;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	color: #fff;
 }
 
 .app .forecast .day_day {}

@@ -10,12 +10,6 @@
 	const unsplashUrl = `https://api.unsplash.com/photos/random?query=landscape&client_id=${clientId}`;
 
 
-	/* Weather Data */
-	const apiKey = apikeys.OWM_API_KEY;
-	const inputVal = 'Berlin';
-	const cityIdBerlin = 2950159;
-	let unit = 'metric';
-	let weatherUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=52.5067614&lon=13.2846508&appid=${apiKey}&units=${unit}&exclude=minutely`;
 
 	const elements = {
 		date: find('.js_date'),
@@ -67,6 +61,7 @@
 	 * Fetch image from Unsplash API
 	 */
 	function fetchImage() {
+
 		fetch(unsplashUrl)
 			.then(response => response.json())
 			.then(data => {
@@ -102,13 +97,48 @@
 	 * Fetches WeatherData from openweathermap API
 	 */
 	function fetchWeather() {
-		fetch(weatherUrl)
-			.then(response => response.json())
-			.then(data => {
-				displayWeather(data);
-			}).catch(function(error) {
-				console.log(error);
-			});
+
+		/* Weather Data */
+		const apiKey = apikeys.OWM_API_KEY;
+		const inputVal = 'Berlin';
+		const cityIdBerlin = 2950159;
+		let unit = 'metric';
+		let userPosLat;
+		let userPosLong;
+		let weatherUrl;
+
+		/* Get User Location */
+		// if (navigator.geolocation) {
+		// 	navigator.geolocation.getCurrentPosition(showPosition);
+		// } else {
+		// 	console.log("Geolocation is not supported by this browser.");
+		// }
+
+
+		// TODO: remove
+
+		// function showPosition(position) {
+
+			// console.log(position);
+			// userPosLat = position.coords.latitude;
+			// userPosLong = position.coords.longitude;
+
+			var berlinlat = '52.5071778';
+			var berlinLong ='13.4468267';
+			 weatherUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${berlinlat}&lon=${berlinLong}&appid=${apiKey}&units=${unit}&exclude=minutely`;
+
+
+
+			fetch(weatherUrl)
+				.then(response => response.json())
+				.then(data => {
+					displayWeather(data);
+					console.log("fetched");
+				}).catch(function(error) {
+					console.log(error);
+				});
+		// }
+
 	}
 
 	/**
@@ -127,8 +157,8 @@
 		elements.chanceOfRain.textContent = Math.round(weatherData.hourly[0].pop * 100, 2) + '%';
 		elements.uvIndex.textContent = weatherData.current.uvi;
 		elements.wind.textContent = weatherData.current.wind_deg + "deg / " + weatherData.current.wind_speed;
-		elements.sunrise.textContent = weatherData.current.sunrise;
-		elements.sunset.textContent = weatherData.current.sunset;
+		elements.sunrise.textContent = getTimeFromTimestamp(weatherData.current.sunrise);
+		elements.sunset.textContent = getTimeFromTimestamp(weatherData.current.sunset);
 
 		// elements.icon.src = 'weather_3d/' +weatherData.current.weather[0].icon + '.png';
 		/* Forecast */
@@ -164,25 +194,24 @@
 
 		let dailyWeather = weatherData.daily;
 
-		dailyWeather.forEach(function(day, index) {
+		for (let i = 0; i < dailyWeather.length; i++) {
+			let day = dailyWeather[i];
 
-			// skip first day, as it is today
-			if (index !== 0) {
-
-				let listItem = `<li class="day" data-idx="${index}">
- 					<span class="day_day js_day_day">${getDayFromTimestamp(day.dt)}</span>
- 					<img class="day_icon js_day_icon" width="60" src="assets/icons/weather/${day.weather[0].icon}@2x.png" />
- 					<span class="day_min_max">
- 						<span class="day_max js_day_max">${Math.round(day.temp.max,2)}°</span>
- 						<span class="day_min js_day_min">${Math.round(day.temp.min,2)}°</span>
- 					</span>
- 					<span class="day_description js_day_description">${day.weather[0].main}</span>
- 				</li>`;
+			// skip days 0 (today), 6 and 7
+			if ([0, 5, 6].indexOf(i) === -1) {
+				let listItem = `<li class="day" data-idx="${i}" data-day="${getDayOfMonthFromTimestamp(day.dt)}">
+					<span class="day_day js_day_day">${getDayFromTimestamp(day.dt)}</span>
+					<img class="day_icon js_day_icon" width="60" src="assets/icons/weather/${day.weather[0].icon}@2x.png" />
+					<span class="day_min_max">
+						<span class="day_max js_day_max">${Math.round(day.temp.max,2)}°</span>
+						<span class="day_min js_day_min">${Math.round(day.temp.min,2)}°</span>
+					</span>
+					<span class="day_description js_day_description">${day.weather[0].main}</span>
+				</li>`;
 
 				elements.forecastList.appendChild(forecastItemnode(listItem));
 			}
-
-		});
+		}
 
 	};
 
@@ -204,6 +233,30 @@
 		dayOfWeek = daysShort[date.getDay()];
 
 		return dayOfWeek;
+	}
+
+
+	/* Return Day from Timestamp */
+	function getDayOfMonthFromTimestamp(timestamp) {
+		var date;
+		var dayOfMonth;
+
+		date = new Date(timestamp * 1000);
+		dayOfMonth = date.getDate();
+
+		return dayOfMonth;
+	}
+
+	/* Return Time from Timestamp */
+	function getTimeFromTimestamp(timestamp) {
+		var date;
+		var hour;
+
+		date = new Date(timestamp * 1000);
+
+		hour = date.toLocaleTimeString();
+
+		return hour.slice(0, -3);
 	}
 
 
