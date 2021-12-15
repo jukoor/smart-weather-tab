@@ -1,5 +1,5 @@
 /* === 00 Fonts == */
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;600;700&display=swap');
 
 /* === 01 Global Styles === */
 * {
@@ -40,6 +40,38 @@ div {
 	font-size: 2rem;
 	line-height: 2rem;
 	margin-top: 0;
+	position: relative;
+}
+
+.heading .set_date_today {
+	font-weight: 300;
+	font-size: 0.8rem;
+	line-height: 0.8rem;
+	position: absolute;
+	right: 0;
+	top: 50%;
+	transform: translateY(-70%);
+	padding: 4px 10px;
+	border-radius: 15px;
+	cursor: pointer;
+	color: #333;
+	letter-spacing: 2px;
+	font-weight: 600;
+	border: 2px solid #009688;
+	transition: all .2s ease-out;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.heading .set_date_today:hover {
+	background: #009688;
+	color: #fff;
+}
+
+.heading .set_date_today.active {
+	transform: translateY(-50%);
+	opacity: 1;
+	pointer-events: all;
 }
 
 /* === 02 Weather === */
@@ -85,10 +117,24 @@ div {
 	flex-direction: row;
 	padding: 2rem;
 	margin-bottom: 5rem;
+	overflow: hidden;
+}
+
+.app .weather .current_weather::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	width: 70%;
+	background: linear-gradient(90deg, #b3b3b3, transparent);
+	top: 0;
+	z-index: 1;
+	display: block;
+	height: 100%;
 }
 
 .app .weather .current_weather .col {
 	flex: 1;
+	z-index: 2;
 }
 
 .app .weather .current_weather .right_col {
@@ -102,7 +148,7 @@ div {
 .app .weather .box {
 	flex: 1;
 	flex-basis: 50%;
-	padding: 2rem 0;
+	padding: 2.1rem 0;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -111,12 +157,14 @@ div {
 
 .app .weather .box .title {
 	text-transform: uppercase;
-	font-weight: 700;
-	font-size: 10px;
+	font-weight: 400;
+	font-size: 12px;
+	margin-bottom: 5px;
 }
 
 .app .weather .box .value {
-	font-size: 20px;
+	font-size: 25px;
+	font-weight: 600;
 }
 
 .app .weather .date_location {
@@ -151,7 +199,7 @@ div {
 	align-self: flex-start;
 	/* margin: 0 auto; */
 	border-radius: 25px;
-	padding: 3px 10px;
+	padding: 3px 15px;
 	color: #fff;
 	font-size: 14px;
 	line-height: 18px;
@@ -176,8 +224,8 @@ div {
 }
 
 .app .details_and_forecast .col {
-	flex: 1 0 49%;
-	max-width: 49%;
+	flex: 1 0 48%;
+	max-width: 48%;
 }
 
 .app .details_and_forecast .detail_data {
@@ -185,7 +233,6 @@ div {
 	flex-wrap: wrap;
 	background: #fff;
 	border-radius: 25px;
-	margin-right: 1rem;
 }
 
 .app .forecast {}
@@ -200,17 +247,18 @@ div {
 	padding: 0;
 	list-style: none;
 	background: #fff;
+	height: 60px;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 0.8em 2rem 0.8rem 5rem;
+	padding: 0.8em 2rem 0.8rem 4rem;
 	border-radius: 25px;
 	margin-bottom: 0.8rem;
 	position: relative;
 	border: 2px solid transparent;
 	cursor: pointer;
 	transform: translateZ(0);
-	transition: border .6s ease-out;
+	transition: border .3s linear;
 	-webkit-backface-visibility: hidden;
 	-moz-backface-visibility: hidden;
 	-ms-backface-visibility: hidden;
@@ -219,6 +267,12 @@ div {
 .app .forecast_list .day:hover,
 .app .forecast_list .day.active {
 	border-color: #333;
+}
+
+.app .forecast_list .day .day_description {
+	-webkit-backface-visibility: hidden;
+	-moz-backface-visibility: hidden;
+	-ms-backface-visibility: hidden;
 }
 
 .app .forecast_list .day.active {
@@ -302,10 +356,62 @@ div {
 	border: none;
 	box-shadow: none;
 	outline: 0;
-	background: url('../../assets/icons/settings.svg') no-repeat center;
+	/* background: url('../../assets/icons/settings.svg') no-repeat center; */
+	padding: 0;
+	background: transparent;
 	width: 24px;
 	height: 24px;
 	cursor: pointer;
+	position: relative;
+}
+
+.app .settings_trigger .bar {
+	width: 100%;
+	height: 2px;
+	top: 3px;
+	left: 0;
+	background: #333;
+	position: absolute;
+}
+
+.app .settings_trigger .bar.mid {
+	top: 11px;
+}
+
+.app .settings_trigger .bar.bot {
+	top: 19px;
+}
+
+.app .settings_trigger .handle {
+	background: #333;
+	position: absolute;
+	width: 6px;
+	left: 5px;
+	top: 1px;
+	height: 6px;
+	border-radius: 50%;
+	transition: transform .3s ease-out;
+}
+
+.app .settings_trigger .handle.mid {
+	top: 9px;
+	left: 14px;
+}
+
+.app .settings_trigger .handle.bot {
+	top: 17px;
+}
+
+.app .settings_trigger:hover .handle.top {
+	transform: translateX(6px);
+}
+
+.app .settings_trigger:hover .handle.mid {
+	transform: translateX(-9px);
+}
+
+.app .settings_trigger:hover .handle.bot {
+	transform: translateX(6px);
 }
 
 /* === Responsive === */

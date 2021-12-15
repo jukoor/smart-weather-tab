@@ -22,7 +22,8 @@
 		sunriseSunset: find('.js_sunrise_sunset .value'),
 		icon: find('.js_weather_icon'),
 		forecastList: find('.js_forecast_list'),
-		currentWeather: find('.js_current_weather')
+		currentWeather: find('.js_current_weather'),
+		setDayTodayBtn: find('.js_set_date_today')
 	};
 
 	let weatherDataTemp;
@@ -43,8 +44,9 @@
 		fetchWeather();
 
 		displayImage(unsplasSourceUrl);
-
+		initClickListener();
 	}
+
 
 	/**
 	 * Get, format and set current date
@@ -93,7 +95,7 @@
 
 		// imgContainer.appendChild(img);
 		// imgAuthor.appendChild(link);
-		console.log("Ok");
+
 		elements.currentWeather.style.backgroundImage = "url('" + imgLink + "')";
 	}
 
@@ -154,7 +156,7 @@
 	 */
 	function displayWeather(weatherData, day) {
 		console.log(weatherData);
-		console.log(day);
+
 
 		/* Current weather condition */
 		elements.temp.textContent = Math.round(weatherData.current.temp, 2);
@@ -226,7 +228,7 @@
 			// skip days 0 (today), 6 and 7
 			if ([0, 6, 7].indexOf(i) === -1) {
 				let listItem = `<li class="day js_day" data-idx="${i}" data-day="${getDayOfMonthFromTimestamp(day.dt)}">
-					<span class="day_day js_day_day">${getDayFromTimestamp(day.dt)}</span>
+					<span class="day_day js_day_day">${getDayShortFromTimestamp(day.dt)}</span>
 					<img class="day_icon js_day_icon" width="60" src="assets/icons/weather/${day.weather[0].icon}@2x.png" />
 					<span class="day_min_max">
 						<span class="day_max js_day_max">${Math.round(day.temp.max,2)}°</span>
@@ -235,30 +237,46 @@
 					<span class="day_description js_day_description">${day.weather[0].main}</span>
 				</li>`;
 
-				elements.forecastList.appendChild(createItemNode(listItem, i));
+				elements.forecastList.appendChild(createItemNode(listItem, i, getDayFromTimestamp(day.dt)));
 			}
 		}
 
 	};
 
 
-	const createItemNode = (item, i) => {
+	const createItemNode = (item, i, daytext) => {
 		var template = document.createElement('template');
 		template.innerHTML = item;
 		template.content.childNodes[0].addEventListener('click', function() {
-			document.querySelectorAll(".js_day").forEach((el) => el.classList.remove("active"));
+			findAll(".js_day").forEach((el) => el.classList.remove("active"));
 			this.classList.add('active');
 			displayWeather(weatherDataTemp, i);
+			// update headline text
+			find('.js_today_label').textContent = daytext;
+			// show today btn
+			elements.setDayTodayBtn.classList.add('active');
 		});
 		return template.content.childNodes[0];
 	};
 
 
+	/* Return Day (short) from Timestamp */
+	function getDayShortFromTimestamp(timestamp) {
+		var date;
+		var dayOfWeek;
+		var daysShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+		date = new Date(timestamp * 1000);
+		dayOfWeek = daysShort[date.getDay()];
+
+		return dayOfWeek;
+	}
+
 	/* Return Day from Timestamp */
 	function getDayFromTimestamp(timestamp) {
 		var date;
 		var dayOfWeek;
-		var daysShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+		var daysShort = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 		date = new Date(timestamp * 1000);
 		dayOfWeek = daysShort[date.getDay()];
@@ -292,4 +310,9 @@
 
 
 
+	function initClickListener() {
+		elements.setDayTodayBtn.addEventListener('click', function() {
+			this.classList.remove('active');
+		});
+	}
 })();

@@ -43,7 +43,10 @@
 
 					<!-- Current Condition Details -->
 					<div class="current_details col">
-						<h2 class="heading">Highlights <span class="thin">Today</span></h2>
+						<h2 class="heading">Highlights
+							<span class="thin js_today_label"> Today</span>
+							<span class="set_date_today js_set_date_today">Today</span>
+						</h2>
 
 						<div class="detail_data">
 							<div class="temp_min_max js_temp_min_max box">
@@ -51,11 +54,11 @@
 								<div class="value js_value"></div>
 							</div>
 							<div class="chance_of_rain js_chance_of_rain box">
-								<div class="title">Rain</div>
+								<div class="title">☔️ Rain</div>
 								<div class="value js_value"></div>
 							</div>
 							<div class="wind js_wind box">
-								<div class="title">Wind</div>
+								<div class="title">🍃 Wind</div>
 								<div class="value js_value"></div>
 							</div>
 							<div class="uv_index js_uv_index box">
@@ -63,7 +66,7 @@
 								<div class="value js_value">4</div>
 							</div>
 							<div class="sunrise_sunset js_sunrise_sunset box">
-								<div class="title">Sunrise / Sunset</div>
+								<div class="title">🔆🍃 Sunrise / Sunset</div>
 								<div class="value js_value"></div>
 							</div>
 							<div class="air_quality js_air_quality box">
@@ -84,7 +87,14 @@
 			</div>
 
 			<div class="settings">
-				<button type="button" class="settings_trigger js_settings_trigger"></button>
+				<button type="button" class="settings_trigger js_settings_trigger">
+					<span class="bar top"></span>
+					<span class="bar mid"></span>
+					<span class="bar bot"></span>
+					<span class="handle top"></span>
+					<span class="handle mid"></span>
+					<span class="handle bot"></span>
+				</button>
 			</div>
 		</div>
 
