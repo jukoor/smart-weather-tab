@@ -199,10 +199,15 @@ div {
 	align-self: flex-start;
 	/* margin: 0 auto; */
 	border-radius: 25px;
-	padding: 3px 15px;
+	padding: 4px 15px;
 	color: #fff;
 	font-size: 14px;
 	line-height: 18px;
+}
+
+.app .weather .description .emoji {
+	display: inline-block;
+	margin-right: 10px;
 }
 
 .app .weather .temp {
@@ -224,8 +229,8 @@ div {
 }
 
 .app .details_and_forecast .col {
-	flex: 1 0 48%;
-	max-width: 48%;
+	flex: 1 0 47%;
+	max-width: 47%;
 }
 
 .app .details_and_forecast .detail_data {
@@ -251,7 +256,7 @@ div {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 0.8em 2rem 0.8rem 4rem;
+	padding: 0.8em 2rem 0.8rem 4.2rem;
 	border-radius: 25px;
 	margin-bottom: 0.8rem;
 	position: relative;
@@ -304,12 +309,19 @@ div {
 	border-radius: 50%;
 	width: 40px;
 	height: 40px;
+	font-weight: 400;
+	font-size: 13px;
 	color: #fff;
 	transform: translateZ(0);
 }
 
 .app .forecast .day_day {
 	transform: translateZ(0);
+}
+
+.app .forecast .day_min {
+	width: 22px;
+	display: inline-block;
 }
 
 .app .forecast .day_max {
@@ -319,6 +331,8 @@ div {
 	-moz-backface-visibility: hidden;
 	-ms-backface-visibility: hidden;
 	transform: translateZ(0);
+	width: 22px;
+	display: inline-block;
 }
 
 .app .forecast .day_min_max {
@@ -344,7 +358,7 @@ div {
 }
 
 /* === 04 Settings === */
-.app .settings {
+.app .settings_outer {
 	position: absolute;
 	right: 2rem;
 	bottom: 2rem;
@@ -356,17 +370,33 @@ div {
 	border: none;
 	box-shadow: none;
 	outline: 0;
-	/* background: url('../../assets/icons/settings.svg') no-repeat center; */
 	padding: 0;
 	background: transparent;
-	width: 24px;
-	height: 24px;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
 	cursor: pointer;
 	position: relative;
 }
 
+.app .settings_trigger::before {
+	content: '';
+	width: 130%;
+	height: 130%;
+	background: transparent;
+	transition: background .3s ease-out;
+	left: -9px;
+	top: -8px;
+	position: absolute;
+	border-radius: 50%;
+}
+
+.app .settings_trigger:hover::before {
+	background: #dbdbdb;
+}
+
 .app .settings_trigger .bar {
-	width: 100%;
+	width: 24px;
 	height: 2px;
 	top: 3px;
 	left: 0;
@@ -444,6 +474,6 @@ div {
 		width: 36px;
 		height: 36px;
 		left: 12px;
-		font-size: 14px;
+		font-size: 12px;
 	}
 }

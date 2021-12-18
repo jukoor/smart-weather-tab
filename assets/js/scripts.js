@@ -10,20 +10,24 @@
 	const unsplashUrl = `https://api.unsplash.com/photos/random?query=landscape&client_id=${clientId}`;
 	const unsplasSourceUrl = 'https://source.unsplash.com/featured?berlin&orientation=landscape';
 
+	const weatherApiKey = apikeys.OWM_API_KEY;
 
 	const elements = {
 		date: find('.js_date'),
 		temp: find('.js_temp'),
-		description: find('.js_description'),
+		description: find('.js_description .js_value'),
+		descriptionEmoji: find('.js_emoji'),
 		tempMinMax: find('.js_temp_min_max .value'),
-		chanceOfRain: find('.js_chance_of_rain .value'),
-		uvIndex: find('.js_uv_index .value'),
-		wind: find('.js_wind .value'),
-		sunriseSunset: find('.js_sunrise_sunset .value'),
+		chanceOfRain: find('.js_chance_of_rain .js_value'),
+		uvIndex: find('.js_uv_index .js_value'),
+		wind: find('.js_wind .js_value'),
+		sunriseSunset: find('.js_sunrise_sunset .js_value'),
 		icon: find('.js_weather_icon'),
 		forecastList: find('.js_forecast_list'),
 		currentWeather: find('.js_current_weather'),
-		setDayTodayBtn: find('.js_set_date_today')
+		setDayTodayBtn: find('.js_set_date_today'),
+		latLong: find('.js_lat_long'),
+		airquality: find('.js_air_quality .js_value')
 	};
 
 	let weatherDataTemp;
@@ -106,7 +110,7 @@
 	function fetchWeather() {
 
 		/* Weather Data */
-		const apiKey = apikeys.OWM_API_KEY;
+
 		const inputVal = 'Berlin';
 		const cityIdBerlin = 2950159;
 		let unit = 'metric';
@@ -132,8 +136,7 @@
 
 		var berlinlat = '52.5071778';
 		var berlinLong = '13.4468267';
-		weatherUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${berlinlat}&lon=${berlinLong}&appid=${apiKey}&units=${unit}&exclude=minutely`;
-		const airPollutionUrl = `http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=52.5067614&lon=13.2846508&appid=${apiKey}`;
+		weatherUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${berlinlat}&lon=${berlinLong}&appid=${weatherApiKey}&units=${unit}&exclude=minutely,hourly`;
 
 
 		fetch(weatherUrl)
@@ -160,6 +163,7 @@
 
 		/* Current weather condition */
 		elements.temp.textContent = Math.round(weatherData.current.temp, 2);
+		elements.descriptionEmoji.textContent = getIconForWeather(weatherData.current.weather[0].id);
 		elements.description.textContent = weatherData.current.weather[0].description;
 
 		/* Highlights */
@@ -168,22 +172,9 @@
 		elements.uvIndex.textContent = weatherData.daily[day].uvi;
 		elements.wind.textContent = Math.round((weatherData.daily[day].wind_speed * 3.6), 2) + "km/h"; //km/h
 		elements.sunriseSunset.textContent = getTimeFromTimestamp(weatherData.daily[day].sunrise) + ' / ' + getTimeFromTimestamp(weatherData.daily[day].sunset);
-		// elements.airquality.textContent = fetchAirQualityData();
+		elements.latLong.textContent = weatherData.lat + '° N, ' + weatherData.lon + '° W,';
+		fetchAndSetAirQualityData(day);
 
-		function fetchAirQualityData() {
-			// Air Quality
-			// fetch(airPollutionUrl)
-			// 	.then(response => response.json())
-			// 	.then(data => {
-			// 		console.log(data);
-			// 		setActiveAQIbox(data.list[0].main.aqi);
-			// 		airQualityVal.textContent = getAirQualityText(data.list[0].main.aqi);
-			// 		// airQuality.textContent = data.list[0].main.aqi;
-			// 	})
-			// 	.catch(() => {
-			// 		alert("Air Quality Index temporarily not available. Please try again later.");
-			// 	});
-		}
 
 		// elements.icon.src = 'weather_3d/' +weatherData.current.weather[0].icon + '.png';
 		/* Forecast */
@@ -199,24 +190,25 @@
 
 	}
 
-	/**
-	 * Display forecast data
-	 * @param {object} weatherData Fetched weather data object containing current condition and 8 days forecast
-	 */
-	// function createForecastList(weatherData) {
-	//
-	// 	const listItem = document.querySelector('.day');
-	// 	let dayMin = listItem.querySelector('.js_day_min');
-	// 	let dayMax = listItem.querySelector('.js_day_max');
-	// 	let dayDay = listItem.querySelector('.js_day_day');
-	// 	let dayIcon = listItem.querySelector('.js_day_icon');
-	// 	// let dayMin = listItem.querySelector('.js_day_min');
-	//
-	//
-	// 	dayMin.textContent = Math.round(weatherData.daily[1].temp.min,2) + '°';
-	// 	dayMax.textContent = Math.round(weatherData.daily[1].temp.max,2) + '°';
-	// 	dayIcon.src = 'assets/icons/weather/' + weatherData.daily[1].weather[0].icon + '@2x.png';
-	// }
+	function fetchAndSetAirQualityData(day) {
+
+		const airPollutionUrl = `http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=52.5067614&lon=13.2846508&appid=${weatherApiKey}`;
+		const ratings = ['Good2', 'Fair', 'Moderate', 'Bad', 'Unhealthy'];
+
+		// Air Quality
+		fetch(airPollutionUrl)
+			.then(response => response.json())
+			.then(data => {
+				console.log(data);
+				elements.airquality.textContent = ratings[data.list[0].main.aqi-1];
+				// console.log()
+			})
+			.catch(() => {
+				// console.log("Air Quality Index temporarily not available. Please try again later.");
+			});
+	}
+
+
 
 	const createForecastList = (weatherData) => {
 
@@ -227,14 +219,17 @@
 
 			// skip days 0 (today), 6 and 7
 			if ([0, 6, 7].indexOf(i) === -1) {
-				let listItem = `<li class="day js_day" data-idx="${i}" data-day="${getDayOfMonthFromTimestamp(day.dt)}">
-					<span class="day_day js_day_day">${getDayShortFromTimestamp(day.dt)}</span>
-					<img class="day_icon js_day_icon" width="60" src="assets/icons/weather/${day.weather[0].icon}@2x.png" />
+				let listItem = `<li class="day js_day" data-idx="${i}" data-day="${getDayShortFromTimestamp(day.dt)}">
+					<span class="date_day">${getDayOfMonthFromTimestamp(day.dt)}. ${getMonthShortFromTimestamp(day.dt)}</span>
+					<span class="icon_description">
+						<img class="day_icon js_day_icon" width="60" src="assets/icons/weather/${day.weather[0].icon}@2x.png" />
+						<span class="day_description js_day_description">${day.weather[0].main}</span>
+					</span>
 					<span class="day_min_max">
 						<span class="day_max js_day_max">${Math.round(day.temp.max,2)}°</span>
 						<span class="day_min js_day_min">${Math.round(day.temp.min,2)}°</span>
 					</span>
-					<span class="day_description js_day_description">${day.weather[0].main}</span>
+
 				</li>`;
 
 				elements.forecastList.appendChild(createItemNode(listItem, i, getDayFromTimestamp(day.dt)));
@@ -284,6 +279,40 @@
 		return dayOfWeek;
 	}
 
+	function getMonthShortFromTimestamp(timestamp) {
+		var date;
+		var dayOfWeek;
+		const monthsShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+		let today = new Date();
+		let day = today.getDay();
+
+
+		return monthsShort[(today.getMonth())];
+	}
+
+	function getIconForWeather(weatherId) {
+		let weatherIdString = weatherId.toString(10);
+		let idFirstNumber = weatherIdString.charAt(0);
+
+		// if weather condition id starts with 8, use the full id, otherwise only the first number
+		let lookUpId = parseInt(idFirstNumber) == 8 ? weatherId : idFirstNumber;
+
+		let emojiLookup = {
+			2: '🌪',
+			3: '🌧',
+			5: '☔️',
+			6: '❄️',
+			7: '🌀',
+			800: '☀️',
+			801: '🌤',
+			802: '⛅️',
+			803: '🌥',
+			804: '☁️'
+		};
+
+		return emojiLookup[lookUpId];
+	}
+
 
 	/* Return Day from Timestamp */
 	function getDayOfMonthFromTimestamp(timestamp) {
@@ -311,8 +340,12 @@
 
 
 	function initClickListener() {
+		/* Reset Highlights Data to today */
 		elements.setDayTodayBtn.addEventListener('click', function() {
 			this.classList.remove('active');
+			findAll(".js_day").forEach((el) => el.classList.remove("active"));
+			find('.js_today_label').textContent = 'Today';
+			displayWeather(weatherDataTemp, 0);
 		});
 	}
 })();

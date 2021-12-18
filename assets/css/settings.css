@@ -1,0 +1,326 @@
+/* Settings.css */
+.settings {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	z-index: 10;
+	/* transform: translateX(100%);
+	transition: transform .4s ease-out, background-color .3s ease-out; */
+	/* pointer-events: none; */
+	left: 0;
+	top: 0;
+	backdrop-filter: blur(10px);
+}
+
+.settings.active {
+	pointer-events: all;
+	/* display: block; */
+	transform: translateX(0);
+}
+
+.settings .close_settings {
+	background-image: url('../icons/settings/close.svg');
+	width: 24px;
+	height: 24px;
+	position: absolute;
+	right: 40px;
+	transition: transform .3s ease-out;
+	/* transform-origin: center; */
+}
+
+.settings .close_settings:hover {
+	transform: rotateZ(90deg);
+}
+
+.settings .top_toolbar {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 0;
+	width: 100%;
+	/* height: 40px; */
+	/* padding: 40px 0 0; */
+	/* max-height: 50px; */
+}
+
+.settings .inner {
+	height: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+}
+
+.settings .toggle {
+	position: relative;
+	display: inline-block;
+	width: 119px;
+	height: 30px;
+	margin-left: auto;
+}
+
+.settings .toggle input[type="checkbox"] {
+	opacity: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.settings .toggle label {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	position: relative;
+	/* display: -webkit-flex; */
+	display: -ms-flexbox;
+	/* display: flex; */
+	/* -webkit-align-items: center; */
+	-ms-flex-align: center;
+	/* align-items: center; */
+}
+
+.settings .toggle_inner {
+	height: 30px;
+	flex: 0 0 120px;
+	border-radius: 25px;
+	-webkit-transition: background-color 0.3s ease-in-out;
+	transition: background-color 0.3s ease-in-out;
+	background: #90a4ae;
+	cursor: pointer;
+}
+
+.settings input[type="checkbox"]:checked~label .can-toggle__switch {
+	background-color: #44ae7f;
+}
+
+.settings .switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.settings .toggle_inner::before {
+	content: attr(data-checked);
+	position: absolute;
+	top: 0;
+	text-transform: uppercase;
+	text-align: center;
+	font-size: 15px;
+	line-height: 29px;
+	width: 63px;
+	padding: 0 0px;
+	left: 57px;
+	color: rgb(255 255 255 / 70%);
+	max-width: 63px;
+	box-sizing: border-box;
+	font-weight: 700;
+}
+
+.settings input[type="checkbox"]:checked~label .toggle_inner:before {
+	content: attr(data-unchecked);
+	left: 0;
+}
+
+.settings .toggle_inner::after {
+	content: attr(data-unchecked);
+	position: absolute;
+	z-index: 5;
+	text-transform: uppercase;
+	text-align: center;
+	background: white;
+	-webkit-transform: translate3d(0, 0, 0);
+	transform: translate3d(0, 0, 0);
+	-webkit-transition: -webkit-transform 0.3s cubic-bezier(0, 1, 0.5, 1);
+	transition: transform 0.3s cubic-bezier(0, 1, 0.5, 1);
+	color: #000000;
+	top: 3px;
+	left: 3px;
+	border-radius: 25px;
+	width: 57px;
+	line-height: 24px;
+	font-size: 15px;
+	box-sizing: border-box;
+	font-weight: 700;
+}
+
+.settings input[type="checkbox"]:checked~label .toggle_inner::after {
+	content: attr(data-checked);
+	transform: translate3d(56px, 0, 0);
+	color: #368a65;
+}
+
+.settings input[type="checkbox"]:checked~label .toggle_inner {
+	background-color: rgb(95 95 95 / 52%);
+}
+
+.settings .settings_icon {
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	margin-right: 25px;
+}
+
+.settings .settings_icon.wind {
+	background: url('../icons/settings/wind.svg') no-repeat center;
+	background-size: 20px;
+}
+
+.settings .settings_icon.fahrenheit {
+	background: url('../icons/settings/thermometer.svg') no-repeat center;
+	background-size: auto;
+}
+
+.settings .settings_icon.time {
+	background: url('../icons/settings/time.svg') no-repeat center;
+	background-size: 20px;
+}
+
+.settings .settings_icon.darkmode {
+	background: url('../icons/settings/darkmode.svg') no-repeat center;
+	background-size: 20px;
+}
+
+.settings .setting_single {
+	display: flex;
+	/* justify-content: space-between; */
+	align-items: center;
+	border-bottom: 1px dashed #333;
+	padding-bottom: 14px;
+	padding-top: 14px;
+}
+
+.settings .left_tabs {
+	width: 240px;
+	background: darkgrey;
+}
+
+.settings .body {
+	top: 50%;
+	transform: translate(-50%, -50%);
+	left: 50%;
+	background: #fff;
+	width: 95vw;
+	max-width: 500px;
+	display: flex;
+	flex-direction: column;
+	padding: 3rem 4rem;
+	flex: 1;
+	border-radius: 25px;
+	padding: 4rem 4rem;
+	box-shadow: 0px 4px 13px 5px #0000005c;
+}
+
+.settings .button_bar {
+	text-align: center;
+	margin-top: 3rem;
+}
+
+.settings .get_pro_btn {
+	width: 160px;
+	font-size: 16px;
+	font-weight: 600;
+	color: #fff;
+	cursor: pointer;
+	height: 55px;
+	text-align: center;
+	border: none;
+	background-size: 300% 100%;
+	border-radius: 50px;
+	moz-transition: all .4s ease-in-out;
+	-o-transition: all .4s ease-in-out;
+	-webkit-transition: all .4s ease-in-out;
+	transition: all .4s ease-in-out;
+	background-image: linear-gradient(to right,
+		#0ba360,
+		#3cba92,
+		#30dd8a,
+		#2bb673);
+	box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
+}
+
+.settings .get_pro_btn:hover {
+	background-position: 100% 0;
+	moz-transition: all .4s ease-in-out;
+	-o-transition: all .4s ease-in-out;
+	-webkit-transition: all .4s ease-in-out;
+	transition: all .4s ease-in-out;
+}
+
+.settings .get_pro_btn .check_icon {
+	position: absolute;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	top: 50%;
+}
+
+.settings .settings_label {
+	font-weight: 700;
+	font-size: 20px;
+	transition: color .3s ease-out;
+}
+
+.settings .setting_label {
+	transition: color .3s ease-out;
+}
+
+.settings .setting_category {
+	border-bottom: 1px solid #333;
+	padding-bottom: 8px;
+	margin-top: 50px;
+	padding-left: 45px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	transition: color .3s ease-out;
+}
+
+/* dark mode */
+body.darkmode .settings {
+	background-color: #333;
+}
+
+body.darkmode .settings .close_settings {
+	background-image: url('../icons/settings/close_white.svg');
+}
+
+body.darkmode .settings .settings_label {
+	color: #fff;
+}
+
+body.darkmode .settings .setting_label {
+	color: #fff;
+}
+
+body.darkmode .settings .setting_category {
+	color: #fff;
+	border-bottom-color: #fff;
+}
+
+body.darkmode .settings .setting_single {
+	border-bottom-color: #fff;
+}
+
+body.darkmode .settings .settings_icon.wind {
+	background-image: url('../icons/settings/wind_white.svg');
+}
+
+body.darkmode .settings .settings_icon.fahrenheit {
+	background-image: url('../icons/settings/thermometer_white.svg');
+}
+
+body.darkmode .settings .settings_icon.time {
+	background-image: url('../icons/settings/time_white.svg');
+}
+
+body.darkmode .settings .settings_icon.darkmode {
+	background-image: url('../icons/settings/darkmode_white.svg');
+}
+
+/* tabs */
+.settings .tab {
+	font-size: 25px;
+	border-left: 5px solid transparent;
+}
+
+.settings .tab.active {
+	border-left-color: red;
+}
