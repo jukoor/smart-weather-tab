@@ -9,7 +9,8 @@
 	/* pointer-events: none; */
 	left: 0;
 	top: 0;
-	backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px) grayscale(1);
+	transition: backdrop-filter .4s linear;
 }
 
 .settings.active {
@@ -214,7 +215,8 @@
 	margin-top: 3rem;
 }
 
-.settings .get_pro_btn {
+.settings .save {
+	position: relative;
 	width: 160px;
 	font-size: 16px;
 	font-weight: 600;
@@ -237,7 +239,7 @@
 	box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
 }
 
-.settings .get_pro_btn:hover {
+.settings .save:hover {
 	background-position: 100% 0;
 	moz-transition: all .4s ease-in-out;
 	-o-transition: all .4s ease-in-out;
@@ -245,11 +247,28 @@
 	transition: all .4s ease-in-out;
 }
 
-.settings .get_pro_btn .check_icon {
+.settings .save .check_icon {
 	position: absolute;
 	left: 50%;
-	transform: translate(-50%, -50%);
+	transform: translate(-50%, -40%);
 	top: 50%;
+	transition: transform .1s .4s ease-out, opacity .1s .4s ease-out;
+	opacity: 0;
+}
+
+.settings .save .label {
+	display: inline-block;
+	transition: transform .2s ease-out, opacity .2s ease-out;
+}
+
+.settings .save.active .label {
+	transform: translateY(-10px);
+	opacity: 0;
+}
+
+.settings .save.active .check_icon {
+	transform: translate(-50%, -50%);
+	opacity: 1;
 }
 
 .settings .settings_label {
@@ -323,4 +342,59 @@ body.darkmode .settings .settings_icon.darkmode {
 
 .settings .tab.active {
 	border-left-color: red;
+}
+
+/* Location search input & custom dropdown */
+.settings .custom_select {
+	position: relative;
+}
+
+.settings .custom_select select {
+	display: none;
+}
+
+.settings .select_selected {
+	background-color: DodgerBlue;
+}
+
+.settings .select_selected:after {
+	position: absolute;
+	content: "";
+	top: 14px;
+	right: 10px;
+	width: 0;
+	height: 0;
+	border: 6px solid transparent;
+	border-color: #fff transparent transparent transparent;
+}
+
+.settings .select_selected.select_arrow_active:after {
+	border-color: transparent transparent #fff transparent;
+	top: 7px;
+}
+
+.settings .select_items div, .select_selected {
+	color: #ffffff;
+	padding: 8px 16px;
+	border: 1px solid transparent;
+	border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+	cursor: pointer;
+	user-select: none;
+}
+
+.settings .select_items {
+	position: absolute;
+	background-color: DodgerBlue;
+	top: 100%;
+	left: 0;
+	right: 0;
+	z-index: 99;
+}
+
+.settings .select_hide {
+	/* display: none; */
+}
+
+.settings .select_items div:hover, .same_as_selected {
+	background-color: rgba(0, 0, 0, 0.1);
 }

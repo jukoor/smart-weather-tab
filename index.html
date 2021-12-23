@@ -94,9 +94,18 @@
 					<div class="body">
 						<nav class="nav top_toolbar">
 							<div class="settings_label">Settings</div>
-							<button type="button" class="close_settings js_close_settings icon_btn">Close Settings</button>
 						</nav>
-						<div class="setting_category">Unit Settings</div>
+						<div class="setting_category">Location</div>
+						<div class="setting_single fahrenheit_celcius">
+							<div class="settings_icon fahrenheit"></div>
+							<div class="setting_label">Select</div>
+							<div class="search_container">
+								<div class="autocomplete" style="width:300px;">
+									<input id="locationSearch" type="text" name="myCountry" placeholder="Country">
+								</div>
+							</div>
+						</div>
+						<div class="setting_category">Units</div>
 						<div class="setting_single fahrenheit_celcius">
 							<div class="settings_icon fahrenheit"></div>
 							<div class="setting_label">Temperature</div>
@@ -118,7 +127,7 @@
 							</div>
 						</div>
 
-						<div class="setting_category">UI Settings</div>
+						<div class="setting_category">Interface</div>
 						<div class="setting_single dark_mode">
 							<div class="settings_icon darkmode"></div>
 							<div class="setting_label">Dark Mode</div>
@@ -130,7 +139,7 @@
 							</div>
 						</div>
 						<div class="button_bar">
-							<button type="button" class="get_pro_btn js_get_pro">
+							<button type="button" class="save js_save">
 								<span class="label">Save</span>
 								<img src="assets/icons/settings/check.svg" width="40" height="40" class="check_icon" />
 							</button>
@@ -149,6 +158,8 @@
 		</div>
 
 	</div>
+
+	<script src="assets/js/autocomplete.js"></script>
 	<script src="assets/js/secrets.js"></script>
 	<script src="assets/js/scripts.js"></script>
 </body>
