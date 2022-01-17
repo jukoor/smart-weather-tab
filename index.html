@@ -3,25 +3,26 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>Chrome Weather Tab</title>
-	<meta name="description" content="Displays current and 7-day forecast weather data in a new chrome tab.">
+	<title>Weather</title>
 	<meta name="author" content="Julian Orth">
 
-	<link rel="stylesheet" href="assets/css/styles.css">
+	<link rel="stylesheet" href="assets/css/autocomplete.css">
 	<link rel="stylesheet" href="assets/css/settings.css">
+	<link rel="stylesheet" href="assets/css/styles.css">
+
 </head>
 
 <body>
 	<div id="app" class="app">
 		<div class="background">
-
+			<div class="blur_bg js_blur_bg"></div>
 			<div class="weather">
 
 				<div class="current_weather js_current_weather">
 					<div class="left_col col">
 						<!-- Date & Location -->
 						<div class="date_location">
-							<div class="location js_location">München, <span class="country js_country">GER</span></div>
+							<div class="location js_location">Munich, <span class="country js_country">GER</span></div>
 							<div class="date js_date"></div>
 						</div>
 
@@ -31,7 +32,6 @@
 						</div> -->
 						<div class="temp js_temp">--</div>
 						<div class="description js_description"><span class="emoji js_emoji"></span><span class="value js_value">--</span></div>
-						<div class="lat_long js_lat_long"></div>
 					</div>
 
 
@@ -93,15 +93,15 @@
 				<div class="settings js_settings">
 					<div class="body">
 						<nav class="nav top_toolbar">
-							<div class="settings_label">Settings</div>
+							<div class="settings_label">🛠 Settings</div>
 						</nav>
 						<div class="setting_category">Location</div>
 						<div class="setting_single fahrenheit_celcius">
-							<div class="settings_icon fahrenheit"></div>
-							<div class="setting_label">Select</div>
+							<div class="settings_icon city"></div>
+							<div class="setting_label">City</div>
 							<div class="search_container">
-								<div class="autocomplete" style="width:300px;">
-									<input id="locationSearch" type="text" name="myCountry" placeholder="Country">
+								<div class="autocomplete">
+									<input id="locationSearch" type="text" class="custom_input" name="CitySearch" placeholder="Search for city...">
 								</div>
 							</div>
 						</div>
@@ -146,7 +146,7 @@
 						</div>
 					</div>
 				</div>
-				<button type="button" class="settings_trigger js_settings_trigger">
+				<button type="button" class="settings_trigger js_settings_trigger" title="Open Settings">
 					<span class="bar top"></span>
 					<span class="bar mid"></span>
 					<span class="bar bot"></span>
