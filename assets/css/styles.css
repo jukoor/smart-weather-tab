@@ -11,10 +11,17 @@ body {
 	padding: 0;
 	font-family: 'Lato', Arial, sans-serif;
 	font-weight: 300;
+	color: #333;
 }
 
 div {
+	/* color: #333; */
 	position: relative;
+}
+
+p {
+	color: #333;
+	margin: 0;
 }
 
 .hide {

@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="flag-icons-tc" version="1.1" viewBox="0 0 640 480">
-  <path id="path314" fill="#006" d="M640 480V0H0v480h640z" style="fill:#002868;fill-opacity:1"/>
-  <g id="g90" fill="none" stroke="#000" transform="matrix(.125 0 0 .125 485 299.6)">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="flag-icons-tc" version="1.1" viewBox="0 0 512 512">
+  <path id="path314" fill="#006" d="M512 512V0H0v512z" style="fill:#002868;fill-opacity:1;stroke-width:.92376"/>
+  <g id="g90" fill="none" stroke="#000" transform="matrix(.125 0 0 .125 386 316.5)">
     <path id="use26" d="M840-1000v720C840 200 600 717 0 997-600 717-840 200-840-280v-720z" style="fill:#fcd116;stroke-width:64"/>
     <path id="use28" d="M840-1000v720C840 200 600 717 0 997-600 717-840 200-840-280v-720z" style="stroke:#fff;stroke-width:56"/>
     <g id="g88" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2">
@@ -44,9 +44,9 @@
       </g>
     </g>
   </g>
-  <path id="path219" fill="#012169" d="M0 0h320v240H0Z" style="stroke-width:.5"/>
-  <path id="path221" fill="#fff" d="m37.5 0 122 90.5L281 0h39v31l-120 89.5 120 89V240h-40l-120-89.5L40.5 240H0v-30l119.5-89L0 32V0Z" style="stroke-width:.5"/>
-  <path id="path223" fill="#c8102e" d="M212 140.5 320 220v20l-135.5-99.5Zm-92 10 3 17.5-96 72H0ZM320 0v1.5l-124.5 94 1-22L295 0ZM0 0l119.5 88h-30L0 21Z" style="stroke-width:.5"/>
-  <path id="path225" fill="#fff" d="M120.5 0v240h80V0ZM0 80v80h320V80Z" style="stroke-width:.5"/>
-  <path id="path227" fill="#c8102e" d="M0 96.5v48h320v-48zM136.5 0v240h48V0Z" style="stroke-width:.5"/>
+  <path id="path3201" fill="#012169" d="M0-.5h256v256H0Z" style="stroke-width:.5"/>
+  <path id="path3203" fill="#fff" d="M256-.5v32l-95 96 95 93.5v34.5h-33.5l-95.5-94-93 94H0v-34L93 128 0 36.5v-37h31l96 94 93-94z" style="stroke-width:.5"/>
+  <path id="path3205" fill="#c8102e" d="m92 161.5 5.5 17-76.5 77H0V254Zm62-6 27 4 75 73.5v22.5zM256-.5l-96 98-2-22 75-76zM0 0l96.5 94.5-29.5-4L0 24Z" style="stroke-width:.5"/>
+  <path id="path3207" fill="#fff" d="M88-.5v256h80V-.5zm-88 88v80h256v-80z" style="stroke-width:.5"/>
+  <path id="path3209" fill="#c8102e" d="M0 103.5v48h256v-48zM104-.5v256h48V-.5z" style="stroke-width:.5"/>
 </svg>

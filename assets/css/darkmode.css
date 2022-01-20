@@ -1,0 +1,121 @@
+/* Main Interface */
+body.darkmode .app .background {
+	background: #525252;
+}
+
+body.darkmode .app .details_and_forecast .col {
+	color: #fff;
+}
+
+body.darkmode .app .details_and_forecast .detail_data {
+	background: #333;
+}
+
+body.darkmode .app .forecast_list .day {
+	background: #333;
+}
+
+body.darkmode .app .forecast_list .day::before {
+	background: #fff;
+	color: #333;
+}
+
+body.darkmode .app .settings_trigger .bar {
+	background: #fff;
+}
+
+body.darkmode .app .settings_trigger .handle {
+	border-color: #fff;
+	background: #525252;
+}
+
+body.darkmode .app .settings_trigger:hover::before {
+	background: #333333;
+}
+
+body.darkmode .app .forecast_list .day:hover, body.darkmode .app .forecast_list .day.active {
+	border-color: #fff;
+}
+
+body.darkmode .heading .set_date_today {
+	color: #fff;
+}
+
+/* /Main Interface */
+/* Settings */
+body.darkmode .settings {
+	background-color: #333;
+}
+
+body.darkmode .settings .settings_label {
+	color: #fff;
+}
+
+body.darkmode .settings .setting_label {
+	color: #fff;
+}
+
+body.darkmode .settings .setting_category {
+	color: #fff;
+	border-bottom-color: #fff;
+}
+
+body.darkmode .settings .setting_single {
+	background: #525252;
+}
+
+body.darkmode .settings .settings_icon.wind {
+	background-image: url('../icons/settings/wind_white.svg');
+}
+
+body.darkmode .settings .settings_icon.fahrenheit {
+	background-image: url('../icons/settings/thermometer_white.svg');
+}
+
+body.darkmode .settings .settings_icon.time {
+	background-image: url('../icons/settings/time_white.svg');
+}
+
+body.darkmode .settings .settings_icon.darkmode {
+	background-image: url('../icons/settings/darkmode_white.svg');
+}
+
+body.darkmode .settings input[type="checkbox"]:checked~label .toggle_inner {
+	background: #333333;
+}
+
+body.darkmode .settings .settings_icon.city {
+	background-image: url('../icons/settings/location_white.svg');
+}
+
+body.darkmode .settings .settings_icon.wind {
+	background-image: url('../icons/settings/wind_white.svg');
+}
+
+body.darkmode .settings .settings_icon.darkmode {
+	background-image: url('../icons/settings/darkmode_white.svg');
+}
+
+body.darkmode .settings .custom_input {
+	border-color: #fff;
+	color: #fff;
+}
+
+body.darkmode .settings .custom_input::placeholder {
+	color: #c7c7c7;
+}
+
+body.darkmode .autocomplete-items .listitem {
+	background: #333333;
+}
+
+body.darkmode .autocomplete-items .country_item,
+body.darkmode .autocomplete-items strong {
+	color: #fff;
+}
+
+body.darkmode .autocomplete-items .listitem:hover {
+	background: #525252;
+}
+
+/* /Settings */

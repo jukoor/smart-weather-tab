@@ -2,7 +2,7 @@
 .settings {
 	background: #fff;
 	box-shadow: 0px 4px 13px 5px #0000005c;
-	width: 500px;
+	width: 450px;
 	height: 100%;
 	pointer-events: none;
 	top: 0;
@@ -16,7 +16,7 @@
 .settings .body {
 	display: flex;
 	flex-direction: column;
-	padding: 3rem 3rem;
+	padding: 3rem 2.5rem;
 	flex: 1;
 	height: 100%;
 }
@@ -32,39 +32,22 @@
 	width: 100vw;
 	height: 100vh;
 	left: 0;
-	background: hsl(0deg 0% 0% / 20%);
+	background: hsl(0deg 0% 0% / 60%);
 	z-index: -1;
 	transition: backdrop-filter .5s linear;
 }
 
 .blur_bg.active {
 	transition: backdrop-filter .5s linear;
-	backdrop-filter: blur(10px) grayscale(1);
+	backdrop-filter: grayscale(1);
 	z-index: 2;
 }
 
-.settings .close_settings {
-	background-image: url('../icons/settings/close.svg');
-	width: 24px;
-	height: 24px;
-	position: absolute;
-	right: 40px;
-	transition: transform .3s ease-out;
-	/* transform-origin: center; */
-}
-
-.settings .close_settings:hover {
-	transform: rotateZ(90deg);
-}
-
 .settings .top_toolbar {
-	display: flex;
-	justify-content: center;
 	margin-bottom: 0;
 	width: 100%;
-	/* height: 40px; */
-	/* padding: 40px 0 0; */
-	/* max-height: 50px; */
+	padding-left: 50px;
+	position: relative;
 }
 
 .settings .inner {
@@ -109,7 +92,7 @@
 	border-radius: 25px;
 	-webkit-transition: background-color 0.3s ease-in-out;
 	transition: background-color 0.3s ease-in-out;
-	background: #90a4ae;
+	background: #a9a9a9;
 	cursor: pointer;
 	width: 105px;
 }
@@ -179,10 +162,10 @@
 }
 
 .settings .settings_icon {
-	width: 20px;
+	width: 24px;
 	height: 24px;
 	display: inline-block;
-	margin-right: 20px;
+	margin-right: 15px;
 }
 
 .settings .settings_icon.wind {
@@ -197,7 +180,7 @@
 
 .settings .settings_icon.city {
 	background-image: url('../icons/settings/location.svg');
-	background-size: 23px;
+	background-size: 25px;
 }
 
 .settings .settings_icon.time {
@@ -219,76 +202,35 @@
 	margin-bottom: 15px;
 }
 
-.settings .left_tabs {
-	width: 240px;
-	background: darkgrey;
-}
-
 .settings .button_bar {
 	text-align: center;
 	margin-top: 3rem;
 }
 
-.settings .save {
-	position: relative;
-	width: 160px;
-	font-size: 16px;
-	font-weight: 600;
-	color: #fff;
-	cursor: pointer;
-	height: 55px;
-	text-align: center;
-	border: none;
-	background-size: 300% 100%;
-	border-radius: 50px;
-	moz-transition: all .4s ease-in-out;
-	-o-transition: all .4s ease-in-out;
-	-webkit-transition: all .4s ease-in-out;
-	transition: all .4s ease-in-out;
-	background-image: linear-gradient(to right,
-		#0ba360,
-		#3cba92,
-		#30dd8a,
-		#2bb673);
-	box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
-}
-
-.settings .save:hover {
-	background-position: 100% 0;
-	moz-transition: all .4s ease-in-out;
-	-o-transition: all .4s ease-in-out;
-	-webkit-transition: all .4s ease-in-out;
-	transition: all .4s ease-in-out;
-}
-
-.settings .save .check_icon {
-	position: absolute;
-	left: 50%;
-	transform: translate(-50%, -40%);
-	top: 50%;
-	transition: transform .1s .4s ease-out, opacity .1s .4s ease-out;
-	opacity: 0;
-}
-
-.settings .save .label {
-	display: inline-block;
-	transition: transform .2s ease-out, opacity .2s ease-out;
-}
-
-.settings .save.active .label {
-	transform: translateY(-10px);
-	opacity: 0;
-}
-
-.settings .save.active .check_icon {
-	transform: translate(-50%, -50%);
-	opacity: 1;
-}
-
 .settings .settings_label {
 	font-weight: 700;
-	font-size: 24px;
+	font-size: 30px;
 	transition: color .3s ease-out;
+	margin-bottom: 18px;
+}
+
+.settings .settings_close {
+	width: 35px;
+	height: 35px;
+	border-radius: 50%;
+	position: absolute;
+	top: 2px;
+	left: 0;
+	background: url('../../assets/icons/settings/settings_back.svg') no-repeat center;
+	background-color: #e9e9e9;
+	background-size: 23px;
+	cursor: pointer;
+	border: none;
+	transition: transform .3s ease-out;
+}
+
+.settings .settings_close:hover {
+	transform: scale(1.1);
 }
 
 .settings .setting_label {
@@ -300,55 +242,13 @@
 .settings .setting_category {
 	/* border-bottom: 1px solid #333; */
 	padding-bottom: 8px;
-	margin-top: 50px;
+	margin-top: 30px;
 	padding-left: 53px;
-	font-weight: 700;
+	font-weight: 500;
 	text-transform: uppercase;
 	letter-spacing: 1px;
 	transition: color .3s ease-out;
 	font-size: 14px;
-}
-
-/* dark mode */
-body.darkmode .settings {
-	background-color: #333;
-}
-
-body.darkmode .settings .close_settings {
-	background-image: url('../icons/settings/close_white.svg');
-}
-
-body.darkmode .settings .settings_label {
-	color: #fff;
-}
-
-body.darkmode .settings .setting_label {
-	color: #fff;
-}
-
-body.darkmode .settings .setting_category {
-	color: #fff;
-	border-bottom-color: #fff;
-}
-
-body.darkmode .settings .setting_single {
-	border-bottom-color: #fff;
-}
-
-body.darkmode .settings .settings_icon.wind {
-	background-image: url('../icons/settings/wind_white.svg');
-}
-
-body.darkmode .settings .settings_icon.fahrenheit {
-	background-image: url('../icons/settings/thermometer_white.svg');
-}
-
-body.darkmode .settings .settings_icon.time {
-	background-image: url('../icons/settings/time_white.svg');
-}
-
-body.darkmode .settings .settings_icon.darkmode {
-	background-image: url('../icons/settings/darkmode_white.svg');
 }
 
 /* tabs */
@@ -421,16 +321,22 @@ body.darkmode .settings .settings_icon.darkmode {
 }
 
 .settings .custom_input {
-	width: 206px;
+	width: 235px;
 	outline: 0;
 	border: none;
-	border-bottom: 2px solid #12a667;
-	/* background: #9f9f9f; */
+	border-bottom: 2px solid #000000;
+	background: transparent;
 	height: 30px;
-	padding-left: 10px;
+	padding-left: 8px;
 	font-size: 18px;
-	background-color: rgb(95 95 95 / 20%);
+	/* background-color: rgb(95 95 95 / 20%); */
 	border-radius: 5px;
 	border-bottom-left-radius: 0;
 	border-bottom-right-radius: 0;
+	font-family: "Lato";
+}
+
+.settings .custom_input::placeholder {
+	font-size: 16px;
+	color: #333;
 }
