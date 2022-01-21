@@ -1,0 +1,11 @@
+- General:
+> BG bilder Logik
+> Foto Author link
+> Wetterwarnungen mit counter
+> Userlocation
+
+- Settings:
+> Wind convert
+> City bei Suche anzeigen mit Flagge
+> Tooltips
+> In Cookies speichern

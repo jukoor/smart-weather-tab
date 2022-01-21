@@ -53,7 +53,7 @@
 	function initApp() {
 		setCurrentDate();
 		// displayImage('test');
-		fetchWeather();
+		fetchWeather('metric');
 
 		// displayImage(unsplasSourceUrl);
 		initClickListener();
@@ -115,13 +115,13 @@
 	/**
 	 * Fetches WeatherData from openweathermap API
 	 */
-	function fetchWeather() {
+	function fetchWeather(weatherUnit, appenList) {
 
 		/* Weather Data */
 
 		const inputVal = 'Berlin';
 		const cityIdBerlin = 2950159;
-		let unit = 'metric';
+		let unit = weatherUnit;
 		let userPosLat;
 		let userPosLong;
 		let weatherUrl;
@@ -150,8 +150,10 @@
 		fetch(weatherUrl)
 			.then(response => response.json())
 			.then(data => {
-				displayWeather(data, 0);
+				displayWeather(data, 0, appenList);
 				weatherDataTemp = data;
+				document.body.dataset.tempMode = '';
+				document.body.dataset.tempMode = unit;
 				// console.log("fetched");
 			}).catch(function(error) {
 				console.log(error);
@@ -167,6 +169,7 @@
 	 */
 	function displayWeather(weatherData, day, createforecastlst) {
 		console.log(weatherData);
+
 
 
 		/* Current weather condition */
@@ -208,10 +211,10 @@
 			.then(data => {
 				// console.log(data);
 				elements.airquality.textContent = ratings[data.list[0].main.aqi - 1];
-				// console.log()
 			})
 			.catch(() => {
-				// console.log("Air Quality Index temporarily not available. Please try again later.");
+				console.log("Air Quality Index temporarily not available. Please try again later.");
+				elements.airquality.textContent = 'N/A';
 			});
 	}
 
@@ -391,6 +394,26 @@
 						autocomplete(elements.settingsLocation, data, val);
 					})
 					.catch(() => {});
+			}
+		});
+
+		/* Settings: Temperature Mode */
+		/* On: Celsius, Off: Fahrenheit */
+		elements.settingsTempBool.addEventListener('change', function() {
+			if (this.checked) {
+				fetchWeather('metric', true);
+			} else {
+				fetchWeather('imperial', true);
+			}
+		});
+
+		/* Settings: Wind Mode */
+		/* On: Meter/Second; Off: Miles/Hour */
+		elements.settingsWindBool.addEventListener('change', function() {
+			if (this.checked) {
+
+			} else {
+
 			}
 		});
 

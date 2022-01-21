@@ -118,13 +118,30 @@ p {
 
 .app .weather .current_weather {
 	border-radius: 25px;
-	background: url('../../assets/img/clear_sky.jpg') no-repeat center;
-	background-size: cover;
+	background-image: url('../../assets/img/weather/snow.jpg');
+	background-repeat: no-repeat;
 	display: flex;
 	flex-direction: row;
 	padding: 2rem;
 	margin-bottom: 5rem;
 	overflow: hidden;
+	height: 275px;
+	background-position: right center;
+	/* animation: pingpong 120s infinite linear; */
+}
+
+@keyframes pingpong {
+	0% {
+		background-position: right center;
+	}
+
+	50% {
+		background-position: 0% center;
+	}
+
+	100% {
+		background-position: right center;
+	}
 }
 
 .app .weather .current_weather::before {
@@ -132,7 +149,7 @@ p {
 	position: absolute;
 	left: 0;
 	width: 70%;
-	background: linear-gradient(90deg, #b3b3b3, transparent);
+	background: linear-gradient(90deg, #c7c7c7, transparent);
 	top: 0;
 	z-index: 1;
 	display: block;
@@ -227,7 +244,14 @@ p {
 	content: '°C';
 	position: absolute;
 	top: 0px;
-	/* font-size: 40px; */
+}
+
+body[data-temp-mode="metric"] .app .weather .temp::after {
+	content: '°C';
+}
+
+body[data-temp-mode="imperial"] .app .weather .temp::after {
+	content: '°F';
 }
 
 /* === 03 Forecast === */
@@ -264,7 +288,7 @@ p {
 	display: flex;
 	align-items: center;
 	/* justify-content: space-between; */
-	padding: 0.8em 2rem 0.8rem 4.2rem;
+	padding: 0.8em 1rem 0.8rem 4.2rem;
 	border-radius: 25px;
 	margin-bottom: 0.8rem;
 	position: relative;
@@ -279,7 +303,7 @@ p {
 
 .app .forecast_list .date_day {
 	display: inline-block;
-	flex: 0 0 32%;
+	flex: 0 0 34%;
 }
 
 .app .forecast_list .icon_description {
@@ -338,7 +362,7 @@ p {
 }
 
 .app .forecast .day_min {
-	width: 22px;
+	/* width: 22px; */
 	display: inline-block;
 }
 
@@ -358,8 +382,10 @@ p {
 	-ms-backface-visibility: hidden;
 	transform: translateZ(0);
 	margin-left: auto;
-	flex-basis: 15%;
+	flex-basis: 23%;
 	font-size: 20px;
+	/* white-space: nowrap; */
+	text-align: right;
 }
 
 .app .forecast .day_min {
