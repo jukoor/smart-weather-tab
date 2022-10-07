@@ -1,15 +1,19 @@
 {
-  "manifest_version": 2,
-  "name": "Weather Tab",
+  "manifest_version": 3,
+  "name": "Smart Weather Tab",
   "version": "1.0",
-  "description": "Display Weather",
+  "description": "Display weather in a smart and beautiful way. See the current weather and a 5 day forecast.",
   "author": "Julian Orth",
   "chrome_url_overrides" : {
     "newtab": "index.html"
   },
   "permissions": [
     "storage",
-		"geolocation",
-    "https://api.hackernoon.com/"
-  ]
+		"geolocation"
+  ],
+	"icons": {
+		"16": "frog16.png",
+    "48": "/frog48.png",
+    "128": "frog128.png"
+	}
 }

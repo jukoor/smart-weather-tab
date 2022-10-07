@@ -1,21 +1,22 @@
 (function() {
 
-	/* Disable all features that only work in real Chrome Extension Environment */
-	let devMode = 1;
+	// Disable all features that only work in real Chrome Extension Environment
+	let devMode = 0;
 
-	/* Alias */
+	// Alias
 	const find = document.querySelector.bind(document);
 	const findAll = document.querySelectorAll.bind(document);
 	const findId = document.getElementById.bind(document);
 
-	/* Unsplash API */
+	// Unsplash API
 	const clientId = apikeys.UNSPLASH_CLIENT_ID;
 	const unsplashUrl = `https://api.unsplash.com/photos/random?query=landscape&client_id=${clientId}`;
 	const unsplasSourceUrl = 'https://source.unsplash.com/featured?berlin&orientation=landscape';
 
 	const weatherApiKey = apikeys.OWM_API_KEY;
+	let weatherDataTemp;
 
-	// settings defaults
+	// Settings defaults
 	let savedSettings = {
 		cityLat: 52.5071778,
 		cityLon: 13.4468267,
@@ -27,6 +28,7 @@
 		darkMode: false
 	};
 
+	// Element references
 	const elements = {
 		bgImg: find('.js_bg_img'),
 		locationCity: find('.js_location'),
@@ -53,12 +55,8 @@
 		settingsLocation: findId('locationSearch'),
 		settingsTempBool: findId('settingTempMode'),
 		settingsWindBool: findId('settingWindSpeed'),
-		settingsDarmodeBool: findId('settingDarkMode')
+		settingsDarkmodeBool: findId('settingDarkMode')
 	};
-
-
-
-	let weatherDataTemp;
 
 	const forecastElems = {
 		list: find('.js_forecast_list')
@@ -68,19 +66,40 @@
 	initApp();
 
 	/**
-	 * Initialize application
+	 * Initialize Application
 	 */
 	function initApp() {
+		getAndSetDarkmode();
 		setCurrentDate();
-
 		getUserLocation();
 
 		// fetchWeather('metric', 52.5071778, 13.4468267);
-
 		// displayImage(unsplasSourceUrl);
 		initClickListener();
 	}
 
+	/**
+	 * Get and set darkmode
+	 */
+	function getAndSetDarkmode() {
+		if (!devMode) {
+			chrome.storage.sync.get('settingsDarkmode', function(data) {
+				console.log(data);
+				console.log(data.length);
+
+				// if has data, set value to input elemennt
+				if (data !== undefined) {
+					elements.settingsDarkmodeBool.value = data;
+				} else {
+					// if there is no data, like on the first try, write default value "false"
+					chrome.storage.sync.set({
+						settingsDarkmode: false
+					});
+
+				}
+			});
+		}
+	}
 
 	/**
 	 * Get, format and set current date
@@ -95,43 +114,7 @@
 		elements.date.textContent = weekdays[day] + " " + fullDate;
 	}
 
-	/**
-	 * Fetch image from Unsplash API
-	 */
-	// function fetchImage() {
-	//
-	// 	fetch(unsplasSourceUrl)
-	// 		.then(response => response.json())
-	// 		.then(data => {
-	// 			displayImage(data);
-	// 		}).catch(function(error) {
-	// 			console.log(error);
-	// 		});
-	// }
 
-	/**
-	 * Fetch image from Unsplash API and set as background
-	 * @param {object} imgData Fetched image data
-	 */
-	function displayImage(imgLink) {
-
-		// const imgContainer = document.querySelector('.js_background');
-		// const imgAuthor = document.querySelector('.js_author');
-
-		// let img = document.createElement("img");
-		// img.src = imgData.urls.regular;
-		// img.src = 'bg.jpg';
-
-		// let link = document.createElement("a");
-		// link.href = imgData.user.links.html;
-		// link.classList.add('link');
-		// link.textContent = 'Image by: ' + imgData.user.name;
-
-		// imgContainer.appendChild(img);
-		// imgAuthor.appendChild(link);
-
-		// elements.currentWeather.style.backgroundImage = "url('" + imgLink + "')";
-	}
 
 	function getUserLocation() {
 		/* Get User Location */
@@ -147,11 +130,12 @@
 			// save user location to storage
 			if (!devMode) {
 				chrome.storage.sync.set({
-					userLocationLat: coordinates.latitude
+					userLocation: {
+						lat: coordinates.latitude,
+						long: coordinates.longitude
+					}
 				});
-				chrome.storage.sync.set({
-					userLocationLon: coordinates.longitude
-				});
+
 			}
 
 			fetchWeather('metric', coordinates.latitude, coordinates.longitude);
@@ -161,7 +145,18 @@
 			console.warn(`ERROR(${err.code}): ${err.message}`);
 		}
 
-		navigator.geolocation.getCurrentPosition(success, error, options);
+		// if user location is already known - use the one stored instead of finding it
+		if (!devMode) {
+			chrome.storage.sync.get('userLocation', function(data) {
+
+				if (data.userLocation !== undefined) {
+					fetchWeather('metric', data.userLocation.lat, data.userLocation.long);
+				} else {
+					navigator.geolocation.getCurrentPosition(success, error, options);
+				}
+			});
+		}
+
 	}
 
 	/**
@@ -240,7 +235,7 @@
 		/* Highlights */
 		elements.tempMinMax.textContent = Math.round(weatherData.daily[day].temp.max, 2) + '° / ' + Math.round(weatherData.daily[day].temp.min, 2) + '°';
 		elements.chanceOfRain.textContent = Math.round(weatherData.daily[day].pop * 100, 2) + '%';
-		elements.uvIndex.textContent = weatherData.daily[day].uvi;
+		elements.uvIndex.textContent = Math.round(weatherData.daily[day].uvi, 2);
 		elements.wind.textContent = setWindSpeed(weatherData.daily[day].wind_speed);
 		elements.sunriseSunset.textContent = getTimeFromTimestamp(weatherData.daily[day].sunrise) + ' / ' + getTimeFromTimestamp(weatherData.daily[day].sunset);
 		fetchAndSetAirQualityData(day);
@@ -409,7 +404,6 @@
 		return emojiLookup[lookUpId];
 	}
 
-
 	/* Return Day from Timestamp */
 	function getDayOfMonthFromTimestamp(timestamp) {
 		var date;
@@ -461,9 +455,6 @@
 		let citySearchApi;
 		let citySearchLength = 0;
 
-
-
-		// var countries = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua &amp; Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Bosnia &amp; Herzegovina", "Botswana", "Brazil", "British Virgin Islands", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Cayman Islands", "Central Arfrican Republic", "Chad", "Chile", "China", "Colombia", "Congo", "Cook Islands", "Costa Rica", "Cote D Ivoire", "Croatia", "Cuba", "Curacao", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Falkland Islands", "Faroe Islands", "Fiji", "Finland", "France", "French Polynesia", "French West Indies", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada", "Guam", "Guatemala", "Guernsey", "Guinea", "Guinea Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Isle of Man", "Israel", "Italy", "Jamaica", "Japan", "Jersey", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macau", "Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauro", "Nepal", "Netherlands", "Netherlands Antilles", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Reunion", "Romania", "Russia", "Rwanda", "Saint Pierre &amp; Miquelon", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "St Kitts &amp; Nevis", "St Lucia", "St Vincent", "Sudan", "Suriname", "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor L'Este", "Togo", "Tonga", "Trinidad &amp; Tobago", "Tunisia", "Turkey", "Turkmenistan", "Turks &amp; Caicos", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Virgin Islands (US)", "Yemen", "Zambia", "Zimbabwe"];
 
 		/* Settings: City Search Input */
 		elements.settingsLocation.addEventListener('keyup', function() {
@@ -525,11 +516,22 @@
 		});
 
 		/* Settings: Dark Mode */
-		elements.settingsDarmodeBool.addEventListener('change', function() {
+		elements.settingsDarkmodeBool.addEventListener('change', function() {
 			if (this.checked) {
 				document.body.classList.add('darkmode');
 			} else {
 				document.body.classList.remove('darkmode');
+			}
+
+			// Save selected value to chrome storage
+			if (!devMode) {
+				chrome.storage.sync.set({
+					settingsDarkmode: this.checked
+				});
+
+				chrome.storage.sync.get('settingsDarkmode', function(data) {
+					console.log(data);
+				});
 			}
 		});
 

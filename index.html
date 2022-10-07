@@ -3,15 +3,15 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>Simple Weather</title>
+	<title>Smart Weather Tab</title>
 	<meta name="author" content="Julian Orth">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<link rel="icon" type="image/png" href="assets/icons/frog.png">
 	<link rel="stylesheet" href="assets/css/autocomplete.css">
 	<link rel="stylesheet" href="assets/css/settings.css">
 	<link rel="stylesheet" href="assets/css/styles.css">
 	<link rel="stylesheet" href="assets/css/darkmode.css">
-
 </head>
 
 <body>
@@ -20,19 +20,14 @@
 			<div class="blur_bg js_blur_bg"></div>
 			<div class="weather">
 
+				<!-- Current Weather Widget -->
 				<div class="current_weather js_current_weather">
-					<!-- <div class="video_container">
-						<video id="video" class="video js_video" width="100%" height="auto" muted>
-							<source class="js_video_source" src="" type="video/mp4">
-							Your browser does not support the video tag.
-						</video>
-					</div> -->
+
 					<div class="bg_img_container">
 						<img src="" class="bg_img js_bg_img">
 					</div>
 
 					<div class="left_col col">
-						<!-- Date & Location -->
 						<div class="date_location">
 							<div class="location"><span class="loca js_location">--</span>, <span class="country js_country">--</span></div>
 							<div class="date js_date">-</div>
@@ -41,8 +36,6 @@
 						<div class="temp js_temp">--</div>
 						<div class="description js_description"><span class="emoji js_emoji"></span><span class="value js_value">--</span></div>
 					</div>
-
-					<!-- <div class="author js_author"></div> -->
 
 				</div>
 
@@ -90,7 +83,6 @@
 					</div>
 
 				</div>
-
 
 			</div>
 
@@ -159,6 +151,7 @@
 
 	</div>
 
+	<!-- JS -->
 	<script src="assets/js/autocomplete.js"></script>
 	<script src="assets/js/secrets.js"></script>
 	<script src="assets/js/scripts.js"></script>
