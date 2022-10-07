@@ -39,8 +39,15 @@ function autocomplete(inp, arr, value) {
 			/*insert a input field that will hold the current array item's value:*/
 			b.innerHTML += "<input type='hidden' value='" + arr[i].name + "'>";
 
+			c.dataset.lat = arr[i].lat;
+			c.dataset.lon = arr[i].lon;
+
 			c.addEventListener("click", function(e) {
+				inp.dataset.lat = this.dataset.lat;
+				inp.dataset.lon = this.dataset.lon;
+
 				inp.value = this.getElementsByTagName("input")[0].value;
+
 				closeAllLists();
 			});
 			c.appendChild(b);

@@ -1,5 +1,5 @@
 {
-  "manifest_version": 1,
+  "manifest_version": 2,
   "name": "Weather Tab",
   "version": "1.0",
   "description": "Display Weather",

@@ -1,6 +1,6 @@
 /* Main Interface */
 body.darkmode .app .background {
-	background: #525252;
+	background: #333;
 }
 
 body.darkmode .app .details_and_forecast .col {
@@ -33,12 +33,18 @@ body.darkmode .app .settings_trigger:hover::before {
 	background: #333333;
 }
 
-body.darkmode .app .forecast_list .day:hover, body.darkmode .app .forecast_list .day.active {
-	border-color: #fff;
+body.darkmode .app .forecast_list .day.active {}
+
+body.darkmode .app .forecast_list .day:hover {
+	background-color: #3e3e3e;
 }
 
 body.darkmode .heading .set_date_today {
 	color: #fff;
+}
+
+body.darkmode .app .weather .box {
+	background: #525252;
 }
 
 /* /Main Interface */
@@ -61,6 +67,10 @@ body.darkmode .settings .setting_category {
 }
 
 body.darkmode .settings .setting_single {
+	background: #525252;
+}
+
+body.darkmode .app .forecast_list {
 	background: #525252;
 }
 

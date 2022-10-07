@@ -1,11 +1,4 @@
 - General:
-> BG bilder Logik
-> Foto Author link
-> Wetterwarnungen mit counter
-> Userlocation
-
-- Settings:
-> Wind convert
-> City bei Suche anzeigen mit Flagge
-> Tooltips
-> In Cookies speichern
+> BG Bilder suchen
+> Position in Storage speichern und dann laden beim 2. Mal
+> Settingns in Storage speichern und dann laden beim 2. Mal
