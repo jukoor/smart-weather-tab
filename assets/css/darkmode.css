@@ -35,7 +35,7 @@ body.darkmode .app .settings_trigger .handle {
 }
 
 body.darkmode .app .settings_trigger:hover::before {
-	background: #333333;
+	background: #525252;
 }
 
 body.darkmode .app .forecast_list .day.active {

@@ -18,10 +18,10 @@
 
 	// Settings defaults
 	let savedSettings = {
-		cityLat: 52.5071778,
-		cityLon: 13.4468267,
-		cityName: 'London',
-		cityCountry: 'England',
+		cityLat: 0,
+		cityLon: 0,
+		cityName: '',
+		cityCountry: '',
 		tempMode: 'celcius',
 		windMode: 'kmh',
 		windSpeed: 0,
@@ -70,6 +70,7 @@
 	 */
 	function initApp() {
 		getAndSetDarkmode();
+		loadSettings();
 		setCurrentDate();
 		getUserLocation();
 
@@ -85,11 +86,16 @@
 		if (!devMode) {
 			chrome.storage.sync.get('settingsDarkmode', function(data) {
 				console.log(data);
-				console.log(data.length);
 
 				// if has data, set value to input elemennt
 				if (data !== undefined) {
-					elements.settingsDarkmodeBool.value = data;
+					elements.settingsDarkmodeBool.checked = data.settingsDarkmode;
+					// trigger change event
+					// Create a new 'change' event
+					var event = new Event('change');
+
+					// Dispatch it.
+					elements.settingsDarkmodeBool.dispatchEvent(event);
 				} else {
 					// if there is no data, like on the first try, write default value "false"
 					chrome.storage.sync.set({
@@ -99,6 +105,33 @@
 				}
 			});
 		}
+	}
+
+	function loadSettings() {
+
+		if (!devMode) {
+			chrome.storage.sync.get('userLocation', function(data) {
+				savedSettings.cityLat = data.userLocation.lat;
+				savedSettings.cityLong = data.userLocation.long;
+			});
+
+			// chrome.storage.sync.get('userLocation', function(data) {
+			// 	savedSettings.cityLat = data.userLocation.lat;
+			// 	savedSettings.cityLong = data.userLocation.long;
+			// });
+		}
+		//
+		//
+		// let savedSettings = {
+		// 	cityLat: 0,
+		// 	cityLon: 0,
+		// 	cityName: '',
+		// 	cityCountry: '',
+		// 	tempMode: 'celcius',
+		// 	windMode: 'kmh',
+		// 	windSpeed: 0,
+		// 	darkMode: false
+		// };
 	}
 
 	/**
@@ -191,6 +224,13 @@
 					chrome.storage.sync.set({
 						countryName: data[0].country
 					});
+
+					chrome.storage.sync.set({
+						userLocation: {
+							lat: userPosLat,
+							long: userPosLong
+						}
+					});
 				}
 
 			}).catch(function(error) {
@@ -227,7 +267,6 @@
 		console.log(weatherData);
 
 		/* Current weather condition */
-		// setVideoSource(weatherData.current.weather[0].id);
 		elements.temp.textContent = Math.round(weatherData.current.temp, 2);
 		elements.descriptionEmoji.textContent = getIconForWeather(weatherData.current.weather[0].id);
 		elements.description.textContent = weatherData.current.weather[0].description;
@@ -253,6 +292,16 @@
 	function setWindSpeed(windSpeed) {
 		console.log(savedSettings.windSpeed);
 		savedSettings.windSpeed = windSpeed;
+
+		var windMode;
+
+		// Save selected value to chrome storage
+		if (!devMode) {
+			chrome.storage.sync.get('settingsWindmode', function(data) {
+				console.log(data);
+				windMode = data.settingsWindmode;
+			});
+		}
 
 		console.log(savedSettings);
 		if (savedSettings.tempMode == 'celcius' && savedSettings.windMode == 'kmh') {
@@ -282,17 +331,6 @@
 				console.log("Air Quality Index temporarily not available. Please try again later.");
 				elements.airquality.textContent = 'N/A';
 			});
-	}
-
-
-	function setVideoSource(weatherCode) {
-		let video = elements.video;
-		let source = elements.videoSource;
-
-		source.setAttribute('src', 'assets/video/' + weatherCode + '.mp4');
-
-		video.load();
-		video.play();
 	}
 
 
@@ -474,15 +512,6 @@
 							var me = this;
 							window.setTimeout(function() {
 								fetchWeather('metric', me.dataset.lat, me.dataset.lon);
-
-								// save selected city to chrome storage
-								// chrome.storage.sync.set({
-								// 	selectedCityName: "test"
-								// });
-								//
-								// chrome.storage.sync.get('selectedCityName', function(data) {
-								// 	console.log(data);
-								// });
 							}, 250);
 
 						});
@@ -512,6 +541,19 @@
 			} else {
 				savedSettings.windMode = 'mph';
 			}
+
+			// Save selected value to chrome storage
+			if (!devMode) {
+				chrome.storage.sync.set({
+					settingsWindmode: savedSettings.windMode
+				});
+
+				chrome.storage.sync.get('settingsWindmode', function(data) {
+					console.log("wind");
+					console.log(data);
+				});
+			}
+
 			elements.wind.textContent = setWindSpeed(savedSettings.windSpeed);
 		});
 

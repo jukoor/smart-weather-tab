@@ -279,17 +279,17 @@ p {
 }
 
 .app .weather .temp::after {
-	content: '°C';
+	content: "\2103";
 	position: absolute;
 	top: 0px;
 }
 
 body[data-temp-mode="metric"] .app .weather .temp::after {
-	content: '°C';
+	content: "\2103";
 }
 
 body[data-temp-mode="imperial"] .app .weather .temp::after {
-	content: '°F';
+	content: "\8457";
 }
 
 /* === 03 FORECAST === */
