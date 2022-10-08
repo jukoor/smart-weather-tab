@@ -93,48 +93,53 @@
 							<button class="settings_close js_close" title="Close Settings"></button>
 							<div class="settings_label">Settings</div>
 						</nav>
-						<div class="setting_category">Location</div>
-						<div class="setting_single fahrenheit_celcius">
-							<div class="settings_icon city"></div>
-							<div class="setting_label">City</div>
-							<div class="search_container">
-								<div class="autocomplete">
-									<input id="locationSearch" type="text" class="custom_input" name="CitySearch" placeholder="Enter city name...">
+						<div class="settings_inner">
+							<div class="setting_category">Location</div>
+							<div class="setting_single fahrenheit_celcius">
+								<div class="settings_icon city"></div>
+								<div class="setting_label">City</div>
+								<div class="search_container">
+									<div class="autocomplete">
+										<input id="locationSearch" type="text" class="custom_input" name="CitySearch" placeholder="Enter city name...">
+									</div>
+								</div>
+							</div>
+							<div class="setting_category">Units</div>
+							<div class="setting_single fahrenheit_celcius">
+								<div class="settings_icon fahrenheit"></div>
+								<div class="setting_label">Temperature</div>
+								<div class="toggle">
+									<input id="settingTempMode" type="checkbox" checked="checked">
+									<label for="settingTempMode">
+										<div class="toggle_inner" data-checked="C°" data-unchecked="F°"></div>
+									</label>
+								</div>
+							</div>
+							<div class="setting_single wind_format">
+								<div class="settings_icon wind"></div>
+								<div class="setting_label">Wind Speed</div>
+								<div class="toggle">
+									<input id="settingWindSpeed" type="checkbox" checked="checked">
+									<label for="settingWindSpeed">
+										<div class="toggle_inner" data-checked="km/h" data-unchecked="mph"></div>
+									</label>
+								</div>
+							</div>
+
+							<div class="setting_category">Interface</div>
+							<div class="setting_single dark_mode">
+								<div class="settings_icon darkmode"></div>
+								<div class="setting_label">Dark Mode</div>
+								<div class="toggle">
+									<input id="settingDarkMode" type="checkbox">
+									<label for="settingDarkMode">
+										<div class="toggle_inner" data-checked="On" data-unchecked="OFF"></div>
+									</label>
 								</div>
 							</div>
 						</div>
-						<div class="setting_category">Units</div>
-						<div class="setting_single fahrenheit_celcius">
-							<div class="settings_icon fahrenheit"></div>
-							<div class="setting_label">Temperature</div>
-							<div class="toggle">
-								<input id="settingTempMode" type="checkbox" checked="checked">
-								<label for="settingTempMode">
-									<div class="toggle_inner" data-checked="C°" data-unchecked="F°"></div>
-								</label>
-							</div>
-						</div>
-						<div class="setting_single wind_format">
-							<div class="settings_icon wind"></div>
-							<div class="setting_label">Wind Speed</div>
-							<div class="toggle">
-								<input id="settingWindSpeed" type="checkbox" checked="checked">
-								<label for="settingWindSpeed">
-									<div class="toggle_inner" data-checked="km/h" data-unchecked="mph"></div>
-								</label>
-							</div>
-						</div>
-
-						<div class="setting_category">Interface</div>
-						<div class="setting_single dark_mode">
-							<div class="settings_icon darkmode"></div>
-							<div class="setting_label">Dark Mode</div>
-							<div class="toggle">
-								<input id="settingDarkMode" type="checkbox">
-								<label for="settingDarkMode">
-									<div class="toggle_inner" data-checked="On" data-unchecked="OFF"></div>
-								</label>
-							</div>
+						<div class="settings_footer">
+							<p>Smart Weather Tab v 1.0 <br /> © 2022 Julian Orth</p>
 						</div>
 					</div>
 				</div>

@@ -16,12 +16,13 @@
 	transform: translateX(500px);
 	position: fixed;
 	z-index: 10;
+	/* opacity: 0.8; */
 }
 
 .settings .body {
 	display: flex;
 	flex-direction: column;
-	padding: 3rem 2.5rem;
+	padding: 3rem 2.5rem 1rem;
 	flex: 1;
 	height: 100%;
 }
@@ -207,6 +208,11 @@
 	margin-bottom: 15px;
 }
 
+.settings .settings_footer {
+	margin-top: auto;
+	text-align: center;
+}
+
 .settings .button_bar {
 	text-align: center;
 	margin-top: 3rem;
@@ -242,6 +248,7 @@
 	transition: color .3s ease-out;
 	font-weight: 500;
 	color: #333;
+	font-size: 14px;
 }
 
 .settings .setting_category {
@@ -249,8 +256,8 @@
 	padding-bottom: 8px;
 	margin-top: 30px;
 	padding-left: 53px;
-	font-weight: 500;
-	text-transform: uppercase;
+	font-weight: 700;
+	/* text-transform: uppercase; */
 	letter-spacing: 1px;
 	transition: color .3s ease-out;
 	font-size: 14px;

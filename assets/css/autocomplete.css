@@ -28,6 +28,7 @@
 	padding: 11px 10px;
 	cursor: pointer;
 	transition: background-color .3s ease-out;
+	font-size: 14px;
 }
 
 .autocomplete-items .listitem:hover {
@@ -47,4 +48,9 @@
 	top: 0px;
 	position: relative;
 	border: 1px solid #979797;
+}
+
+.autocomplete .country_item {
+	display: flex;
+	align-items: center;
 }

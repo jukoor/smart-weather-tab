@@ -1,4 +1,5 @@
 - General:
-> BG Bilder suchen
-> Position in Storage speichern und dann laden beim 2. Mal
-> Settingns in Storage speichern und dann laden beim 2. Mal
+> BG Bilder suchen - Halb OK
+> Errors beim Autocmplete Settings
+- Fahrenheit Settings noch nicht final
+- Copyright seite hinzufügen

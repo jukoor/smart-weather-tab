@@ -235,6 +235,10 @@ p {
 	margin-bottom: 2rem;
 }
 
+.app .weather .country {
+	font-weight: 400;
+}
+
 .app .weather .location {
 	text-transform: uppercase;
 	margin-bottom: 1rem;
@@ -289,7 +293,7 @@ body[data-temp-mode="metric"] .app .weather .temp::after {
 }
 
 body[data-temp-mode="imperial"] .app .weather .temp::after {
-	content: "\8457";
+	content: "\2109";
 }
 
 /* === 03 FORECAST === */

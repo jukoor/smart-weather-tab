@@ -70,6 +70,8 @@
 	 */
 	function initApp() {
 		getAndSetDarkmode();
+		getAndSetWindmode();
+		getAndSetTempmode();
 		loadSettings();
 		setCurrentDate();
 		getUserLocation();
@@ -80,12 +82,11 @@
 	}
 
 	/**
-	 * Get and set darkmode
+	 * Get and set Darkmode
 	 */
 	function getAndSetDarkmode() {
 		if (!devMode) {
 			chrome.storage.sync.get('settingsDarkmode', function(data) {
-				console.log(data);
 
 				// if has data, set value to input elemennt
 				if (data !== undefined) {
@@ -107,31 +108,80 @@
 		}
 	}
 
+	/**
+	 * Get and set Windmode
+	 */
+	function getAndSetWindmode() {
+		if (!devMode) {
+			chrome.storage.sync.get('settingsWindmode', function(data) {
+				console.log(data);
+				// if has data, set value to input elemennt
+				if (data !== undefined) {
+					elements.settingsWindBool.checked = data.settingsWindmode === 'kmh' ? true : false;
+
+					// Create a new 'change' event
+					var event = new Event('change');
+
+					// Dispatch it.
+					elements.settingsWindBool.dispatchEvent(event);
+				} else {
+					// if there is no data, like on the first try, write default value "kmh"
+					chrome.storage.sync.set({
+						settingsWindmode: 'kmh'
+					});
+				}
+			});
+		}
+	}
+
+	/**
+	 * Get and set Temp mode
+	 */
+	function getAndSetTempmode() {
+		if (!devMode) {
+			chrome.storage.sync.get('settingsTempmode', function(data) {
+				console.log(data);
+				// if has data, set value to input elemennt
+				if (data !== undefined) {
+					elements.settingsTempBool.checked = data.settingsTempmode === 'celcius' ? true : false;
+
+					// Create a new 'change' event
+					var event = new Event('change');
+
+					// Dispatch it.
+					elements.settingsWindBool.dispatchEvent(event);
+				} else {
+					// if there is no data, like on the first try, write default value "kmh"
+					chrome.storage.sync.set({
+						settingsWindmode: 'kmh'
+					});
+				}
+			});
+		}
+	}
+
+
 	function loadSettings() {
 
 		if (!devMode) {
 			chrome.storage.sync.get('userLocation', function(data) {
-				savedSettings.cityLat = data.userLocation.lat;
-				savedSettings.cityLong = data.userLocation.long;
+				if (data.userLocation !== undefined) {
+					savedSettings.cityLat = data.userLocation.lat;
+					savedSettings.cityLong = data.userLocation.long;
+				}
 			});
 
-			// chrome.storage.sync.get('userLocation', function(data) {
-			// 	savedSettings.cityLat = data.userLocation.lat;
-			// 	savedSettings.cityLong = data.userLocation.long;
-			// });
+			chrome.storage.sync.get('settingsTempmode', function(data) {
+				if (data.settingsTempmode !== undefined) {
+					savedSettings.tempMode = data.settingsTempmode;
+				} else {
+					// set default value on first init
+					chrome.storage.sync.set({
+						settingsTempmode: 'celcius'
+					});
+				}
+			});
 		}
-		//
-		//
-		// let savedSettings = {
-		// 	cityLat: 0,
-		// 	cityLon: 0,
-		// 	cityName: '',
-		// 	cityCountry: '',
-		// 	tempMode: 'celcius',
-		// 	windMode: 'kmh',
-		// 	windSpeed: 0,
-		// 	darkMode: false
-		// };
 	}
 
 	/**
@@ -183,7 +233,7 @@
 			chrome.storage.sync.get('userLocation', function(data) {
 
 				if (data.userLocation !== undefined) {
-					fetchWeather('metric', data.userLocation.lat, data.userLocation.long);
+					fetchWeather(savedSettings.tempMode === 'celcius' ? 'metric' : 'imperial', data.userLocation.lat, data.userLocation.long);
 				} else {
 					navigator.geolocation.getCurrentPosition(success, error, options);
 				}
@@ -279,18 +329,14 @@
 		elements.sunriseSunset.textContent = getTimeFromTimestamp(weatherData.daily[day].sunrise) + ' / ' + getTimeFromTimestamp(weatherData.daily[day].sunset);
 		fetchAndSetAirQualityData(day);
 
-
 		elements.bgImg.src = 'assets/img/weather/' + weatherData.current.weather[0].icon + '.jpg';
-
 
 		if (day === 0) {
 			createForecastList(weatherData);
 		}
-
 	}
 
 	function setWindSpeed(windSpeed) {
-		console.log(savedSettings.windSpeed);
 		savedSettings.windSpeed = windSpeed;
 
 		var windMode;
@@ -298,12 +344,10 @@
 		// Save selected value to chrome storage
 		if (!devMode) {
 			chrome.storage.sync.get('settingsWindmode', function(data) {
-				console.log(data);
 				windMode = data.settingsWindmode;
 			});
 		}
 
-		console.log(savedSettings);
 		if (savedSettings.tempMode == 'celcius' && savedSettings.windMode == 'kmh') {
 			return Math.round((savedSettings.windSpeed * 3.6), 2) + " km/h";
 		} else if (savedSettings.tempMode == 'celcius' && savedSettings.windMode == 'mph') {
@@ -334,14 +378,12 @@
 	}
 
 
-
 	const createForecastList = (weatherData) => {
 
 		let dailyWeather = weatherData.daily;
 
 		// clear list
 		elements.forecastList.innerHTML = '';
-
 
 		for (let i = 0; i < dailyWeather.length; i++) {
 			let day = dailyWeather[i];
@@ -501,35 +543,40 @@
 			citySearchApi = `http://api.openweathermap.org/geo/1.0/direct?q=${this.value}&limit=5&appid=${weatherApiKey}`;
 
 			// City Search
-			if (valLenght > 0) {
+			if (valLenght > 1) {
 				fetch(citySearchApi)
 					.then(response => response.json())
 					.then(data => {
-						console.log(data);
 						autocomplete(elements.settingsLocation, data, val);
-
-						elements.settingsLocation.addEventListener('change', function() {
-							var me = this;
-							window.setTimeout(function() {
-								fetchWeather('metric', me.dataset.lat, me.dataset.lon);
-							}, 250);
-
-						});
-
 					})
 					.catch(() => {});
 			}
 		});
 
+		elements.settingsLocation.addEventListener('change', function() {
+			var me = this;
+			window.setTimeout(function() {
+				fetchWeather('metric', me.dataset.lat, me.dataset.lon);
+			}, 250);
+		});
+
 		/* Settings: Temperature Mode */
 		/* On: Celsius, Off: Fahrenheit */
 		elements.settingsTempBool.addEventListener('change', function() {
+			var checked = this.checked;
 			if (this.checked) {
 				savedSettings.tempMode = 'celcius';
 				fetchWeather('metric', savedSettings.cityLat, savedSettings.cityLon);
 			} else {
 				savedSettings.tempMode = 'fahrenheit';
 				fetchWeather('imperial', savedSettings.cityLat, savedSettings.cityLon);
+			}
+
+			// Save selected value to chrome storage
+			if (!devMode) {
+				chrome.storage.sync.set({
+					settingsTempmode: checked ? 'celcius' : 'fahrenheit'
+				});
 			}
 		});
 
@@ -546,11 +593,6 @@
 			if (!devMode) {
 				chrome.storage.sync.set({
 					settingsWindmode: savedSettings.windMode
-				});
-
-				chrome.storage.sync.get('settingsWindmode', function(data) {
-					console.log("wind");
-					console.log(data);
 				});
 			}
 
@@ -570,13 +612,8 @@
 				chrome.storage.sync.set({
 					settingsDarkmode: this.checked
 				});
-
-				chrome.storage.sync.get('settingsDarkmode', function(data) {
-					console.log(data);
-				});
 			}
 		});
-
 	}
 
 })();
