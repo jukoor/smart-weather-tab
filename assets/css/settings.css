@@ -4,7 +4,97 @@
 	 - Date: 01.01.2023
 	 - Purpose: Settings Window Styles
 */
-.settings {
+/* Settings Trigger Button */
+/* === 04 SETTINGS === */
+.app .settings_outer {
+	position: absolute;
+	right: 2rem;
+	bottom: 2rem;
+	width: 30px;
+	height: 30px;
+}
+
+.app .settings_trigger {
+	border: none;
+	box-shadow: none;
+	outline: 0;
+	padding: 0;
+	background: transparent;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	cursor: pointer;
+	position: relative;
+}
+
+.app .settings_trigger::before {
+	content: '';
+	width: 130%;
+	height: 130%;
+	background: transparent;
+	transition: background .3s ease-out;
+	left: -9px;
+	top: -8px;
+	position: absolute;
+	border-radius: 50%;
+}
+
+.app .settings_trigger:hover::before {
+	background: #dbdbdb;
+}
+
+.app .settings_trigger .bar {
+	width: 24px;
+	height: 2px;
+	top: 3px;
+	left: 0;
+	background: #333;
+	position: absolute;
+}
+
+.app .settings_trigger .bar.mid {
+	top: 11px;
+}
+
+.app .settings_trigger .bar.bot {
+	top: 19px;
+}
+
+.app .settings_trigger .handle {
+	background: #f5f5f5;
+	position: absolute;
+	width: 7px;
+	left: 5px;
+	top: 0px;
+	height: 7px;
+	border-radius: 50%;
+	transition: transform .3s ease-out;
+	border: 2px solid #333;
+}
+
+.app .settings_trigger .handle.mid {
+	top: 9px;
+	left: 14px;
+}
+
+.app .settings_trigger .handle.bot {
+	top: 17px;
+}
+
+.app .settings_trigger:hover .handle.top {
+	transform: translateX(6px);
+}
+
+.app .settings_trigger:hover .handle.mid {
+	transform: translateX(-9px);
+}
+
+.app .settings_trigger:hover .handle.bot {
+	transform: translateX(6px);
+}
+
+/* Settings Main Window */
+.app .settings {
 	background: #fff;
 	box-shadow: 0px 4px 13px 5px #0000005c;
 	width: 450px;
@@ -16,10 +106,9 @@
 	transform: translateX(500px);
 	position: fixed;
 	z-index: 10;
-	/* opacity: 0.8; */
 }
 
-.settings .body {
+.app .settings .body {
 	display: flex;
 	flex-direction: column;
 	padding: 3rem 2.5rem 1rem;
@@ -49,71 +138,95 @@
 	z-index: 2;
 }
 
-.settings .top_toolbar {
+.app .settings .top_toolbar {
 	margin-bottom: 0;
 	width: 100%;
 	padding-left: 50px;
 	position: relative;
 }
 
-.settings .inner {
+.app .settings .inner {
 	height: 100%;
 	display: flex;
 	flex-wrap: wrap;
 	width: 100%;
 }
 
-.settings .toggle {
+.app .settings .toggle {
 	position: relative;
 	display: inline-block;
-	/* width: 119px; */
 	height: 30px;
 	margin-left: auto;
 }
 
-.settings .toggle input[type="checkbox"] {
+.app .settings .toggle::before {
+	content: attr(data-tooltip);
+	position: absolute;
+	background: #fff;
+	border-radius: 5px;
+	right: calc(100% + 15px);
+	padding: 10px;
+	z-index: 2;
+	width: 173px;
+	opacity: 0;
+	box-shadow: 1px 1px 13px #949494;
+}
+
+.app .settings .toggle:hover::before {
+	transition: opacity 0s linear 1.25s;
+	opacity: 1;
+}
+
+.app .settings .toggle::after {
+	content: '';
+	width: 0;
+	height: 0;
+	border-top: 7px solid transparent;
+	border-left: 9px solid #fff;
+	border-bottom: 7px solid transparent;
+	width: 0;
+	height: 0;
+	position: absolute;
+	right: calc(100% + 6px);
+	top: 10px;
+	opacity: 0;
+	z-index: 3;
+}
+
+.app .settings .toggle:hover::after {
+	transition: opacity 0s linear 1.25s;
+	opacity: 1;
+}
+
+.app .settings .toggle input[type="checkbox"] {
 	opacity: 0;
 	position: absolute;
 	top: 0;
 	left: 0;
 }
 
-.settings .toggle label {
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
+.app .settings .toggle label {
 	user-select: none;
 	position: relative;
-	/* display: -webkit-flex; */
-	display: -ms-flexbox;
-	/* display: flex; */
-	/* -webkit-align-items: center; */
-	-ms-flex-align: center;
-	/* align-items: center; */
 }
 
-.settings .toggle_inner {
+.app .settings .toggle_inner {
 	height: 30px;
 	flex: 0 0 101px;
 	border-radius: 25px;
-	-webkit-transition: background-color 0.3s ease-in-out;
 	transition: background-color 0.3s ease-in-out;
-	background: #a9a9a9;
+	background: #c6c6c6;
 	cursor: pointer;
 	width: 105px;
 }
 
-.settings input[type="checkbox"]:checked~label .can-toggle__switch {
-	background-color: #44ae7f;
-}
-
-.settings .switch input {
+.app .settings .switch input {
 	opacity: 0;
 	width: 0;
 	height: 0;
 }
 
-.settings .toggle_inner::before {
+.app .settings .toggle_inner::before {
 	content: attr(data-checked);
 	position: absolute;
 	top: 0;
@@ -130,21 +243,19 @@
 	font-weight: 700;
 }
 
-.settings input[type="checkbox"]:checked~label .toggle_inner:before {
+.app .settings input[type="checkbox"]:checked~label .toggle_inner:before {
 	content: attr(data-unchecked);
 	left: 0;
 }
 
-.settings .toggle_inner::after {
+.app .settings .toggle_inner::after {
 	content: attr(data-unchecked);
 	position: absolute;
 	z-index: 5;
 	text-transform: uppercase;
 	text-align: center;
-	background: white;
-	-webkit-transform: translate3d(0, 0, 0);
+	background: #fff;
 	transform: translate3d(0, 0, 0);
-	-webkit-transition: -webkit-transform 0.3s cubic-bezier(0, 1, 0.5, 1);
 	transition: transform 0.3s cubic-bezier(0, 1, 0.5, 1);
 	color: #000000;
 	top: 3px;
@@ -157,49 +268,45 @@
 	font-weight: 700;
 }
 
-.settings input[type="checkbox"]:checked~label .toggle_inner::after {
+.app .settings input[type="checkbox"]:checked~label .toggle_inner::after {
 	content: attr(data-checked);
 	transform: translate3d(49px, 0, 0);
 	color: #368a65;
 }
 
-.settings input[type="checkbox"]:checked~label .toggle_inner {
-	background-color: rgb(95 95 95 / 52%);
-}
-
-.settings .settings_icon {
+.app .settings .settings_icon {
 	width: 24px;
 	height: 24px;
 	display: inline-block;
 	margin-right: 15px;
 }
 
-.settings .settings_icon.wind {
+.app .settings .settings_icon.wind {
 	background: url('../icons/settings/wind.svg') no-repeat center;
 	background-size: 22px;
 }
 
-.settings .settings_icon.fahrenheit {
+.app .settings .settings_icon.fahrenheit {
 	background: url('../icons/settings/thermometer.svg') no-repeat center;
 	background-size: 12px;
 }
 
-.settings .settings_icon.city {
+.app .settings .settings_icon.city {
 	background-image: url('../icons/settings/location.svg');
 	background-size: 25px;
 }
 
-.settings .settings_icon.time {
+.app .settings .settings_icon.time {
 	background: url('../icons/settings/time.svg') no-repeat center;
 	background-size: 20px;
 }
 
-.settings .settings_icon.darkmode {
+.app .settings .settings_icon.darkmode {
 	background: url('../icons/settings/darkmode.svg') no-repeat center;
 	background-size: 20px;
 }
 
-.settings .setting_single {
+.app .settings .setting_single {
 	display: flex;
 	align-items: center;
 	padding: 14px;
@@ -208,24 +315,28 @@
 	margin-bottom: 15px;
 }
 
-.settings .settings_footer {
+.app .settings .settings_footer {
 	margin-top: auto;
 	text-align: center;
 }
 
-.settings .button_bar {
+.app .settings .settings_footer p {
+	color: grey;
+}
+
+.app .settings .button_bar {
 	text-align: center;
 	margin-top: 3rem;
 }
 
-.settings .settings_label {
+.app .settings .settings_label {
 	font-weight: 700;
 	font-size: 30px;
 	transition: color .3s ease-out;
 	margin-bottom: 18px;
 }
 
-.settings .settings_close {
+.app .settings .settings_close {
 	width: 35px;
 	height: 35px;
 	border-radius: 50%;
@@ -240,53 +351,51 @@
 	transition: transform .3s ease-out;
 }
 
-.settings .settings_close:hover {
+.app .settings .settings_close:hover {
 	transform: scale(1.1);
 }
 
-.settings .setting_label {
+.app .settings .setting_label {
 	transition: color .3s ease-out;
 	font-weight: 500;
 	color: #333;
 	font-size: 14px;
 }
 
-.settings .setting_category {
-	/* border-bottom: 1px solid #333; */
+.app .settings .setting_category {
 	padding-bottom: 8px;
 	margin-top: 30px;
 	padding-left: 53px;
 	font-weight: 700;
-	/* text-transform: uppercase; */
 	letter-spacing: 1px;
 	transition: color .3s ease-out;
 	font-size: 14px;
 }
 
-/* tabs */
-.settings .tab {
+/* Tabs */
+.app .settings .tab {
 	font-size: 25px;
 	border-left: 5px solid transparent;
 }
 
-.settings .tab.active {
+.app .settings .tab.active {
 	border-left-color: red;
 }
 
 /* Location search input & custom dropdown */
-.settings .custom_select {
+.app .settings .custom_select {
 	position: relative;
 }
 
-.settings .custom_select select {
+.app .settings .custom_select select {
 	display: none;
 }
 
-.settings .select_selected {
+.app .settings .select_selected {
 	background-color: DodgerBlue;
 }
 
-.settings .select_selected:after {
+.app .settings .select_selected:after {
 	position: absolute;
 	content: "";
 	top: 14px;
@@ -297,12 +406,12 @@
 	border-color: #fff transparent transparent transparent;
 }
 
-.settings .select_selected.select_arrow_active:after {
+.app .settings .select_selected.select_arrow_active:after {
 	border-color: transparent transparent #fff transparent;
 	top: 7px;
 }
 
-.settings .select_items div, .select_selected {
+.app .settings .select_items div, .select_selected {
 	color: #ffffff;
 	padding: 8px 16px;
 	border: 1px solid transparent;
@@ -311,7 +420,7 @@
 	user-select: none;
 }
 
-.settings .select_items {
+.app .settings .select_items {
 	position: absolute;
 	background-color: DodgerBlue;
 	top: 100%;
@@ -320,19 +429,17 @@
 	z-index: 99;
 }
 
-.settings .select_hide {
-	/* display: none; */
-}
+.app .settings .select_hide {}
 
-.settings .select_items div:hover, .same_as_selected {
+.app .settings .select_items div:hover, .same_as_selected {
 	background-color: rgba(0, 0, 0, 0.1);
 }
 
-.settings .search_container {
+.app .settings .search_container {
 	margin-left: auto;
 }
 
-.settings .custom_input {
+.app .settings .custom_input {
 	width: 245px;
 	outline: 0;
 	border: none;
@@ -341,14 +448,13 @@
 	height: 30px;
 	padding-left: 8px;
 	font-size: 18px;
-	/* background-color: rgb(95 95 95 / 20%); */
 	border-radius: 5px;
 	border-bottom-left-radius: 0;
 	border-bottom-right-radius: 0;
 	font-family: "Lato";
 }
 
-.settings .custom_input::placeholder {
+.app .settings .custom_input::placeholder {
 	font-size: 16px;
 	color: #333;
 	opacity: 0.5;

@@ -8,15 +8,18 @@
 	const findAll = document.querySelectorAll.bind(document);
 	const findId = document.getElementById.bind(document);
 
-	// Unsplash API
-	const clientId = apikeys.UNSPLASH_CLIENT_ID;
-	const unsplashUrl = `https://api.unsplash.com/photos/random?query=landscape&client_id=${clientId}`;
-	const unsplasSourceUrl = 'https://source.unsplash.com/featured?berlin&orientation=landscape';
-
+	// API Keys
 	const weatherApiKey = apikeys.OWM_API_KEY;
+	const clientId = apikeys.UNSPLASH_CLIENT_ID;
+
+	// Unsplash API
+	// const unsplashUrl = `https://api.unsplash.com/photos/random?query=landscape&client_id=${clientId}`;
+	// const unsplasSourceUrl = 'https://source.unsplash.com/featured?berlin&orientation=landscape';
+
+
 	let weatherDataTemp;
 
-	// Settings defaults
+	// Local settings defaults
 	let savedSettings = {
 		cityLat: 0,
 		cityLon: 0,
@@ -58,112 +61,78 @@
 		settingsDarkmodeBool: findId('settingDarkMode')
 	};
 
-	const forecastElems = {
-		list: find('.js_forecast_list')
-	};
-
-
 	initApp();
 
 	/**
 	 * Initialize Application
 	 */
 	function initApp() {
-		getAndSetDarkmode();
-		getAndSetWindmode();
-		getAndSetTempmode();
 		loadSettings();
 		setCurrentDate();
 		getUserLocation();
-
-		// fetchWeather('metric', 52.5071778, 13.4468267);
-		// displayImage(unsplasSourceUrl);
 		initClickListener();
 	}
 
 	/**
-	 * Get and set Darkmode
+	 * Get settings from chrome storage and save to local variable
 	 */
-	function getAndSetDarkmode() {
-		if (!devMode) {
-			chrome.storage.sync.get('settingsDarkmode', function(data) {
-
-				// if has data, set value to input elemennt
-				if (data !== undefined) {
-					elements.settingsDarkmodeBool.checked = data.settingsDarkmode;
-					// trigger change event
-					// Create a new 'change' event
-					var event = new Event('change');
-
-					// Dispatch it.
-					elements.settingsDarkmodeBool.dispatchEvent(event);
-				} else {
-					// if there is no data, like on the first try, write default value "false"
-					chrome.storage.sync.set({
-						settingsDarkmode: false
-					});
-
-				}
-			});
-		}
-	}
-
-	/**
-	 * Get and set Windmode
-	 */
-	function getAndSetWindmode() {
-		if (!devMode) {
-			chrome.storage.sync.get('settingsWindmode', function(data) {
-				console.log(data);
-				// if has data, set value to input elemennt
-				if (data !== undefined) {
-					elements.settingsWindBool.checked = data.settingsWindmode === 'kmh' ? true : false;
-
-					// Create a new 'change' event
-					var event = new Event('change');
-
-					// Dispatch it.
-					elements.settingsWindBool.dispatchEvent(event);
-				} else {
-					// if there is no data, like on the first try, write default value "kmh"
-					chrome.storage.sync.set({
-						settingsWindmode: 'kmh'
-					});
-				}
-			});
-		}
-	}
-
-	/**
-	 * Get and set Temp mode
-	 */
-	function getAndSetTempmode() {
-		if (!devMode) {
-			chrome.storage.sync.get('settingsTempmode', function(data) {
-				console.log(data);
-				// if has data, set value to input elemennt
-				if (data !== undefined) {
-					elements.settingsTempBool.checked = data.settingsTempmode === 'celcius' ? true : false;
-
-					// Create a new 'change' event
-					var event = new Event('change');
-
-					// Dispatch it.
-					elements.settingsWindBool.dispatchEvent(event);
-				} else {
-					// if there is no data, like on the first try, write default value "kmh"
-					chrome.storage.sync.set({
-						settingsWindmode: 'kmh'
-					});
-				}
-			});
-		}
-	}
-
-
 	function loadSettings() {
 
 		if (!devMode) {
+
+			// Get darkmode-setting, set it to input field and trigger change event
+			chrome.storage.sync.get('settingsDarkmode', function(data) {
+				// If there is a value, set value to input element and trigger change event
+				if (data !== undefined) {
+					elements.settingsDarkmodeBool.checked = data.settingsDarkmode;
+					// Create a new 'change' event
+					var event = new Event('change');
+					// Dispatch it
+					elements.settingsDarkmodeBool.dispatchEvent(event);
+				} else {
+					// if data is empty, store default value "false"
+					chrome.storage.sync.set({
+						settingsDarkmode: false
+					});
+				}
+			});
+
+			// Get windmode-setting, set it to input field and trigger change event
+			chrome.storage.sync.get('settingsWindmode', function(data) {
+				// If there is a value, set value to input element and trigger change event
+				if (data !== undefined) {
+					elements.settingsWindBool.checked = data.settingsWindmode === 'kmh' ? true : false;
+					// Create a new 'change' event
+					var event = new Event('change');
+					// Dispatch it.
+					elements.settingsWindBool.dispatchEvent(event);
+				} else {
+					// if there is no data, like on the first try, write default value "kmh"
+					chrome.storage.sync.set({
+						settingsWindmode: 'kmh'
+					});
+				}
+			});
+
+			// Get tempmode-setting, set it to input field and trigger change event
+			chrome.storage.sync.get('settingsTempmode', function(data) {
+				// If there is a value, set value to input element and trigger change event
+				if (data !== undefined) {
+					elements.settingsTempBool.checked = data.settingsTempmode === 'celcius' ? true : false;
+					// Create a new 'change' event
+					var event = new Event('change');
+					// Dispatch it.
+					elements.settingsWindBool.dispatchEvent(event);
+				} else {
+					// if there is no data, like on the first try, write default value "kmh"
+					chrome.storage.sync.set({
+						settingsWindmode: 'kmh'
+					});
+				}
+			});
+
+
+			// Get and set: user location
 			chrome.storage.sync.get('userLocation', function(data) {
 				if (data.userLocation !== undefined) {
 					savedSettings.cityLat = data.userLocation.lat;
@@ -171,11 +140,12 @@
 				}
 			});
 
+			// Get and set: temperature mode
 			chrome.storage.sync.get('settingsTempmode', function(data) {
 				if (data.settingsTempmode !== undefined) {
 					savedSettings.tempMode = data.settingsTempmode;
 				} else {
-					// set default value on first init
+					// set default value to 'celcius'
 					chrome.storage.sync.set({
 						settingsTempmode: 'celcius'
 					});
@@ -221,7 +191,7 @@
 
 			}
 
-			fetchWeather('metric', coordinates.latitude, coordinates.longitude);
+			fetchWeather(savedSettings.tempMode === 'celcius' ? 'metric' : 'imperial', coordinates.latitude, coordinates.longitude);
 		}
 
 		function error(err) {
@@ -555,9 +525,7 @@
 
 		elements.settingsLocation.addEventListener('change', function() {
 			var me = this;
-			window.setTimeout(function() {
-				fetchWeather('metric', me.dataset.lat, me.dataset.lon);
-			}, 250);
+			fetchWeather(savedSettings.tempMode === 'celcius' ? 'metric' : 'imperial', me.dataset.lat, me.dataset.lon);
 		});
 
 		/* Settings: Temperature Mode */

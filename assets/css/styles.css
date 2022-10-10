@@ -9,11 +9,10 @@
  	 01 = GLOBAL
 	 02 = WEATHER
 	 03 = FORECAST
-	 04 = SETTINGS
-	 05 = RESPONSIVE
+	 04 = RESPONSIVE
 */
 /* === 00 FONTS == */
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;500;600;700&display=swap');
 
 /* === 01 GLOBAL STYLES === */
 * {
@@ -24,7 +23,7 @@ body {
 	margin: 0;
 	padding: 0;
 	font-family: 'Lato', Arial, sans-serif;
-	font-weight: 300;
+	font-weight: 400;
 	color: #333;
 }
 
@@ -46,7 +45,7 @@ p {
 }
 
 .thin {
-	font-weight: 300;
+	font-weight: 400;
 }
 
 .app .background {
@@ -88,7 +87,7 @@ p {
 }
 
 .heading .set_date_today {
-	font-weight: 300;
+	font-weight: 400;
 	font-size: 0.8rem;
 	line-height: 0.8rem;
 	position: absolute;
@@ -236,6 +235,10 @@ p {
 }
 
 .app .weather .country {
+	font-weight: 400;
+}
+
+.app .weather .date {
 	font-weight: 400;
 }
 
@@ -422,95 +425,7 @@ body[data-temp-mode="imperial"] .app .weather .temp::after {
 	height: auto;
 }
 
-/* === 04 SETTINGS === */
-.app .settings_outer {
-	position: absolute;
-	right: 2rem;
-	bottom: 2rem;
-	width: 30px;
-	height: 30px;
-}
-
-.app .settings_trigger {
-	border: none;
-	box-shadow: none;
-	outline: 0;
-	padding: 0;
-	background: transparent;
-	width: 32px;
-	height: 32px;
-	border-radius: 50%;
-	cursor: pointer;
-	position: relative;
-}
-
-.app .settings_trigger::before {
-	content: '';
-	width: 130%;
-	height: 130%;
-	background: transparent;
-	transition: background .3s ease-out;
-	left: -9px;
-	top: -8px;
-	position: absolute;
-	border-radius: 50%;
-}
-
-.app .settings_trigger:hover::before {
-	background: #dbdbdb;
-}
-
-.app .settings_trigger .bar {
-	width: 24px;
-	height: 2px;
-	top: 3px;
-	left: 0;
-	background: #333;
-	position: absolute;
-}
-
-.app .settings_trigger .bar.mid {
-	top: 11px;
-}
-
-.app .settings_trigger .bar.bot {
-	top: 19px;
-}
-
-.app .settings_trigger .handle {
-	background: #f5f5f5;
-	position: absolute;
-	width: 7px;
-	left: 5px;
-	top: 0px;
-	height: 7px;
-	border-radius: 50%;
-	transition: transform .3s ease-out;
-	border: 2px solid #333;
-}
-
-.app .settings_trigger .handle.mid {
-	top: 9px;
-	left: 14px;
-}
-
-.app .settings_trigger .handle.bot {
-	top: 17px;
-}
-
-.app .settings_trigger:hover .handle.top {
-	transform: translateX(6px);
-}
-
-.app .settings_trigger:hover .handle.mid {
-	transform: translateX(-9px);
-}
-
-.app .settings_trigger:hover .handle.bot {
-	transform: translateX(6px);
-}
-
-/* === 05 RESPONSIVE === */
+/* === 04 RESPONSIVE === */
 @media (max-width: 1440px) {
 	.app .weather .current_weather {
 		margin-bottom: 2rem;
