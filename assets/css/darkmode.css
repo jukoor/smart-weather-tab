@@ -138,6 +138,10 @@ body.darkmode .autocomplete-items .listitem {
 	background: #333333;
 }
 
+body.darkmode .autocomplete-items .country_item>span>span {
+	opacity: 0.5;
+}
+
 body.darkmode .autocomplete-items .country_item,
 body.darkmode .autocomplete-items strong {
 	color: #fff;

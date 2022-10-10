@@ -1,8 +1,5 @@
 (function() {
 
-	// Disable all features that only work in real Chrome Extension Environment
-	let devMode = 0;
-
 	// Alias
 	const find = document.querySelector.bind(document);
 	const findAll = document.querySelectorAll.bind(document);
@@ -16,11 +13,10 @@
 	// const unsplashUrl = `https://api.unsplash.com/photos/random?query=landscape&client_id=${clientId}`;
 	// const unsplasSourceUrl = 'https://source.unsplash.com/featured?berlin&orientation=landscape';
 
-
-	let weatherDataTemp;
+	var weatherDataTemp;
 
 	// Local settings defaults
-	let savedSettings = {
+	var savedSettings = {
 		cityLat: 0,
 		cityLon: 0,
 		cityName: '',
@@ -53,6 +49,7 @@
 		setDayTodayBtn: find('.js_set_date_today'),
 		airquality: find('.js_air_quality .js_value'),
 		settingsWindow: find('.js_settings'),
+		settingsBlurBg: find('.js_blur_bg'),
 		settingsOpen: find('.js_settings_trigger'),
 		settingsClose: find('.js_settings .js_close'),
 		settingsLocation: findId('locationSearch'),
@@ -78,99 +75,104 @@
 	 */
 	function loadSettings() {
 
-		if (!devMode) {
+		// Get darkmode-setting, set it to input field and trigger change event
+		chrome.storage.sync.get('cityName', function(data) {
+			// If there is a value, set value to input element and trigger change event
+			if (data !== undefined) {
+				savedSettings.cityName = data.cityName;
+			}
+		});
 
-			// Get darkmode-setting, set it to input field and trigger change event
-			chrome.storage.sync.get('settingsDarkmode', function(data) {
-				// If there is a value, set value to input element and trigger change event
-				if (data !== undefined) {
-					elements.settingsDarkmodeBool.checked = data.settingsDarkmode;
-					// Create a new 'change' event
-					var event = new Event('change');
-					// Dispatch it
-					elements.settingsDarkmodeBool.dispatchEvent(event);
-				} else {
-					// if data is empty, store default value "false"
-					chrome.storage.sync.set({
-						settingsDarkmode: false
-					});
-				}
-			});
+		// Get darkmode-setting, set it to input field and trigger change event
+		chrome.storage.sync.get('settingsDarkmode', function(data) {
+			// If there is a value, set value to input element and trigger change event
+			if (data !== undefined) {
+				elements.settingsDarkmodeBool.checked = data.settingsDarkmode;
+				// Create a new 'change' event
+				var event = new Event('change');
+				// Dispatch it
+				elements.settingsDarkmodeBool.dispatchEvent(event);
+			} else {
+				// if data is empty, store default value "false"
+				chrome.storage.sync.set({
+					settingsDarkmode: false
+				});
+			}
+		});
 
-			// Get windmode-setting, set it to input field and trigger change event
-			chrome.storage.sync.get('settingsWindmode', function(data) {
-				// If there is a value, set value to input element and trigger change event
-				if (data !== undefined) {
-					elements.settingsWindBool.checked = data.settingsWindmode === 'kmh' ? true : false;
-					// Create a new 'change' event
-					var event = new Event('change');
-					// Dispatch it.
-					elements.settingsWindBool.dispatchEvent(event);
-				} else {
-					// if there is no data, like on the first try, write default value "kmh"
-					chrome.storage.sync.set({
-						settingsWindmode: 'kmh'
-					});
-				}
-			});
+		// Get windmode-setting, set it to input field and trigger change event
+		chrome.storage.sync.get('settingsWindmode', function(data) {
+			// If there is a value, set value to input element and trigger change event
+			if (data !== undefined) {
+				elements.settingsWindBool.checked = data.settingsWindmode === 'kmh' ? true : false;
+				// Create a new 'change' event
+				var event = new Event('change');
+				// Dispatch it.
+				elements.settingsWindBool.dispatchEvent(event);
+			} else {
+				// if there is no data, like on the first try, write default value "kmh"
+				chrome.storage.sync.set({
+					settingsWindmode: 'kmh'
+				});
+			}
+		});
 
-			// Get tempmode-setting, set it to input field and trigger change event
-			chrome.storage.sync.get('settingsTempmode', function(data) {
-				// If there is a value, set value to input element and trigger change event
-				if (data !== undefined) {
-					elements.settingsTempBool.checked = data.settingsTempmode === 'celcius' ? true : false;
-					// Create a new 'change' event
-					var event = new Event('change');
-					// Dispatch it.
-					elements.settingsWindBool.dispatchEvent(event);
-				} else {
-					// if there is no data, like on the first try, write default value "kmh"
-					chrome.storage.sync.set({
-						settingsWindmode: 'kmh'
-					});
-				}
-			});
+		// Get tempmode-setting, set it to input field and trigger change event
+		chrome.storage.sync.get('settingsTempmode', function(data) {
+			// If there is a value, set value to input element and trigger change event
+			if (data !== undefined) {
+				elements.settingsTempBool.checked = data.settingsTempmode === 'celcius' ? true : false;
+				// Create a new 'change' event
+				var event = new Event('change');
+				// Dispatch it.
+				elements.settingsWindBool.dispatchEvent(event);
+			} else {
+				// if there is no data, like on the first try, write default value "kmh"
+				chrome.storage.sync.set({
+					settingsWindmode: 'kmh'
+				});
+			}
+		});
 
+		// Get and set: user location
+		chrome.storage.sync.get('userLocation', function(data) {
+			if (data.userLocation !== undefined) {
+				savedSettings.cityLat = data.userLocation.lat;
+				savedSettings.cityLon = data.userLocation.long;
+			}
+		});
 
-			// Get and set: user location
-			chrome.storage.sync.get('userLocation', function(data) {
-				if (data.userLocation !== undefined) {
-					savedSettings.cityLat = data.userLocation.lat;
-					savedSettings.cityLong = data.userLocation.long;
-				}
-			});
-
-			// Get and set: temperature mode
-			chrome.storage.sync.get('settingsTempmode', function(data) {
-				if (data.settingsTempmode !== undefined) {
-					savedSettings.tempMode = data.settingsTempmode;
-				} else {
-					// set default value to 'celcius'
-					chrome.storage.sync.set({
-						settingsTempmode: 'celcius'
-					});
-				}
-			});
-		}
+		// Get and set: temperature mode
+		chrome.storage.sync.get('settingsTempmode', function(data) {
+			if (data.settingsTempmode !== undefined) {
+				savedSettings.tempMode = data.settingsTempmode;
+			} else {
+				// set default value to 'celcius'
+				chrome.storage.sync.set({
+					settingsTempmode: 'celcius'
+				});
+			}
+		});
 	}
 
 	/**
-	 * Get, format and set current date
+	 * Get, format and display current date
 	 */
 	function setCurrentDate() {
 		const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 		const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-		let today = new Date();
-		let day = today.getDay();
-		let fullDate = today.getDate() + ', ' + months[(today.getMonth())] + ' ' + today.getFullYear();
+		var today = new Date();
+		var day = today.getDay();
+		var fullDate = today.getDate() + ', ' + months[(today.getMonth())] + ' ' + today.getFullYear();
 
 		elements.date.textContent = weekdays[day] + " " + fullDate;
 	}
 
-
-
+	/**
+	 * Get user location by IP or by stored value
+	 */
 	function getUserLocation() {
-		/* Get User Location */
+
 		var options = {
 			enableHighAccuracy: true,
 			timeout: 5000,
@@ -180,17 +182,14 @@
 		function success(pos) {
 			var coordinates = pos.coords;
 
-			// save user location to storage
-			if (!devMode) {
-				chrome.storage.sync.set({
-					userLocation: {
-						lat: coordinates.latitude,
-						long: coordinates.longitude
-					}
-				});
-
-			}
-
+			// Save user location (latitude and longitude) to chrome storage
+			chrome.storage.sync.set({
+				userLocation: {
+					lat: coordinates.latitude,
+					long: coordinates.longitude
+				}
+			});
+			// Fetch weather
 			fetchWeather(savedSettings.tempMode === 'celcius' ? 'metric' : 'imperial', coordinates.latitude, coordinates.longitude);
 		}
 
@@ -199,62 +198,69 @@
 		}
 
 		// if user location is already known - use the one stored instead of finding it
-		if (!devMode) {
-			chrome.storage.sync.get('userLocation', function(data) {
-
-				if (data.userLocation !== undefined) {
-					fetchWeather(savedSettings.tempMode === 'celcius' ? 'metric' : 'imperial', data.userLocation.lat, data.userLocation.long);
-				} else {
-					navigator.geolocation.getCurrentPosition(success, error, options);
-				}
-			});
-		}
-
+		chrome.storage.sync.get('userLocation', function(data) {
+			if (data.userLocation !== undefined) {
+				fetchWeather(savedSettings.tempMode === 'celcius' ? 'metric' : 'imperial', data.userLocation.lat, data.userLocation.long, savedSettings.cityName);
+			} else {
+				navigator.geolocation.getCurrentPosition(success, error, options);
+			}
+		});
 	}
 
 	/**
 	 * Fetches WeatherData from openweathermap API
+	 * @param {string} weatherUnit - Weather unit 'metric' or 'imperial'
+	 * @param {number} lat - Location coordinates latitute
+	 * @param {number} long - Location coordinates longitude
+	 * @param {string} city - City name, selected after citysearch-autocomplete
 	 */
-	function fetchWeather(weatherUnit, lat, long) {
+	function fetchWeather(weatherUnit, lat, long, city) {
 
-		/* Weather Data */
+		var unit = weatherUnit;
+		var userPosLat = lat;
+		var userPosLong = long;
+		var weatherUrl;
 
-		// const inputVal = 'Berlin';
-		// const cityIdBerlin = 2950159;
-		let unit = weatherUnit;
-		let userPosLat = lat;
-		let userPosLong = long;
-		let weatherUrl;
-
-		// fetch city from coordinates: reverse geocoding
-		let cityFromCrds = `http://api.openweathermap.org/geo/1.0/reverse?lat=${userPosLat}&lon=${userPosLong}&limit=5&appid=${weatherApiKey}`;
+		// Fetch cities from coordinates: reverse geocoding
+		var cityFromCrds = `http://api.openweathermap.org/geo/1.0/reverse?lat=${userPosLat}&lon=${userPosLong}&limit=5&appid=${weatherApiKey}`;
 		fetch(cityFromCrds)
 			.then(response => response.json())
 			.then(data => {
 
-				// display user location city and countnry
-				elements.locationCity.textContent = data[0].name;
+				// Display user location: city and country
+				if (city) {
+					elements.locationCity.textContent = city;
+				} else {
+					elements.locationCity.textContent = data[0].name;
+				}
 				elements.locationCountry.textContent = data[0].country;
 
-				// save user location city and country to storage
-				if (!devMode) {
+				// Save user location city and country to storage
+				if (city) {
+					chrome.storage.sync.set({
+						cityName: city
+					});
+				} else {
 					chrome.storage.sync.set({
 						cityName: data[0].name
 					});
-					chrome.storage.sync.set({
-						countryName: data[0].country
-					});
-
-					chrome.storage.sync.set({
-						userLocation: {
-							lat: userPosLat,
-							long: userPosLong
-						}
-					});
 				}
 
+				chrome.storage.sync.set({
+					countryName: data[0].country
+				});
+
+				chrome.storage.sync.set({
+					userLocation: {
+						lat: userPosLat,
+						long: userPosLong
+					}
+				});
+
 			}).catch(function(error) {
-				console.log(error);
+				// if (confirm("Oops!\nAn error occured while fetching data.\nReloading the page might fix this issue.")) {
+				// 	location.reload();
+				// } else {}
 			});
 
 
@@ -270,28 +276,25 @@
 				weatherDataTemp = data;
 				document.body.dataset.tempMode = '';
 				document.body.dataset.tempMode = unit;
-				// console.log("fetched");
 			}).catch(function(error) {
 				console.log(error);
 			});
-		// }
-
 	}
 
 	/**
 	 * Sets fetched weather data to corresponding HTML element
-	 * @param {object} weatherData Fetched weather data object containing current condition and 8 days forecast
-	 * @param {int} day Day number starting at zero to fetch weather for that day
+	 * @param {Object} weatherData - Fetched weather data object containing current condition and 8 days forecast
+	 * @param {number} day - Number of day in the week starting at zero to fetch weather for that day
 	 */
 	function displayWeather(weatherData, day, weatherUnit) {
 		console.log(weatherData);
 
-		/* Current weather condition */
+		// Current weather condition
 		elements.temp.textContent = Math.round(weatherData.current.temp, 2);
 		elements.descriptionEmoji.textContent = getIconForWeather(weatherData.current.weather[0].id);
 		elements.description.textContent = weatherData.current.weather[0].description;
 
-		/* Highlights */
+		// Highlights
 		elements.tempMinMax.textContent = Math.round(weatherData.daily[day].temp.max, 2) + '° / ' + Math.round(weatherData.daily[day].temp.min, 2) + '°';
 		elements.chanceOfRain.textContent = Math.round(weatherData.daily[day].pop * 100, 2) + '%';
 		elements.uvIndex.textContent = Math.round(weatherData.daily[day].uvi, 2);
@@ -306,17 +309,19 @@
 		}
 	}
 
+	/**
+	 * Get, format and display wind speed
+	 * @param {number} windSpeed - Formats fetched wind speed according to user settigns
+	 */
 	function setWindSpeed(windSpeed) {
 		savedSettings.windSpeed = windSpeed;
 
 		var windMode;
 
 		// Save selected value to chrome storage
-		if (!devMode) {
-			chrome.storage.sync.get('settingsWindmode', function(data) {
-				windMode = data.settingsWindmode;
-			});
-		}
+		chrome.storage.sync.get('settingsWindmode', function(data) {
+			windMode = data.settingsWindmode;
+		});
 
 		if (savedSettings.tempMode == 'celcius' && savedSettings.windMode == 'kmh') {
 			return Math.round((savedSettings.windSpeed * 3.6), 2) + " km/h";
@@ -329,16 +334,19 @@
 		}
 	}
 
+	/**
+	 * Fetches openweathermap air pollution API and displays value
+	 * @param {number} day - Number of day in the week starting at zero to fetch weather for that day
+	 */
 	function fetchAndSetAirQualityData(day) {
 
-		const airPollutionUrl = `http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=52.5067614&lon=13.2846508&appid=${weatherApiKey}`;
+		const airPollutionUrl = `http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${savedSettings.cityLat}&lon=${savedSettings.cityLon}&appid=${weatherApiKey}`;
 		const ratings = ['Good', 'Fair', 'Moderate', 'Bad', 'Unhealthy'];
 
-		// Air Quality
+		// Air Quality API
 		fetch(airPollutionUrl)
 			.then(response => response.json())
 			.then(data => {
-				// console.log(data);
 				elements.airquality.textContent = ratings[data.list[0].main.aqi - 1];
 			})
 			.catch(() => {
@@ -347,20 +355,24 @@
 			});
 	}
 
+	/**
+	 * Creates 5 days forecast list from fetched weather data
+	 * @param {Object} weatherData - Fetched weather data object containing current condition and 8 days forecast
+	 */
+	function createForecastList(weatherData) {
 
-	const createForecastList = (weatherData) => {
+		var dailyWeather = weatherData.daily;
 
-		let dailyWeather = weatherData.daily;
-
-		// clear list
+		// Clear list
 		elements.forecastList.innerHTML = '';
 
-		for (let i = 0; i < dailyWeather.length; i++) {
-			let day = dailyWeather[i];
+		for (var i = 0; i < dailyWeather.length; i++) {
+			var day = dailyWeather[i];
 
-			// skip days 0 (today), 6 and 7
+			// Skip days 0 (today), 6 and 7 to create the 5 day forecast, starting tomorrow
 			if ([0, 6, 7].indexOf(i) === -1) {
-				let listItem = `<li class="day js_day" data-idx="${i}" data-day="${getDayOfMonthFromTimestamp(day.dt)}.">
+				var listItem =
+					`<li class="day js_day" data-idx="${i}" data-day="${getDayOfMonthFromTimestamp(day.dt)}.">
 					<span class="date_day">${getDayFromTimestamp(day.dt)}</span>
 					<span class="icon_description">
 						<img class="day_icon js_day_icon" width="60" src="assets/icons/weather/${day.weather[0].icon}.svg" />
@@ -370,33 +382,41 @@
 						<span class="day_max js_day_max">${Math.round(day.temp.max,2)}°</span>
 						<span class="day_min js_day_min">${Math.round(day.temp.min,2)}°</span>
 					</span>
-
 				</li>`;
 
 				elements.forecastList.appendChild(createItemNode(listItem, i, getDayFromTimestamp(day.dt)));
 			}
 		}
+	}
 
-	};
-
-
-	const createItemNode = (item, i, daytext) => {
+	/**
+	 * Creates 5 days forecast template node and adds click listener to it
+	 * @param {string} item - Forecast list item HTML
+	 * @param {number} i - Iterator variable passed from createForecastList()
+	 * @param {string} daytext - Day of the week as string
+	 * @return {Object} HTML of forecast liste item element
+	 */
+	function createItemNode(item, i, daytext) {
 		var template = document.createElement('template');
 		template.innerHTML = item;
 		template.content.childNodes[0].addEventListener('click', function() {
 			findAll(".js_day").forEach((el) => el.classList.remove("active"));
 			this.classList.add('active');
 			displayWeather(weatherDataTemp, i);
-			// update headline text
+			// Update headline text
 			find('.js_today_label').textContent = daytext;
-			// show today btn
+			// Show today btn
 			elements.setDayTodayBtn.classList.add('active');
 		});
 		return template.content.childNodes[0];
-	};
+	}
 
 
-	/* Return Day (short) from Timestamp */
+	/**
+	 * Takes timestamp and returns day of the week (shortform) as a string
+	 * @param {number} timestamp - Timestamp of weather condition
+	 * @return {string} Day of the week as string in 3-letter form
+	 */
 	function getDayShortFromTimestamp(timestamp) {
 		var date;
 		var dayOfWeek;
@@ -408,7 +428,11 @@
 		return dayOfWeek;
 	}
 
-	/* Return Day from Timestamp */
+	/**
+	 * Takes timestamp and returns day of the week as a string
+	 * @param {number} timestamp - Timestamp of weather condition
+	 * @return {string} Day of the week as string
+	 */
 	function getDayFromTimestamp(timestamp) {
 		var date;
 		var dayOfWeek;
@@ -420,25 +444,35 @@
 		return dayOfWeek;
 	}
 
+	/**
+	 * Takes timestamp and returns month of the year as a string in 3-letter shortform
+	 * @param {number} timestamp - Timestamp of weather condition
+	 * @return {string} Month of the year as shortened string
+	 */
 	function getMonthShortFromTimestamp(timestamp) {
 		var date;
 		var dayOfWeek;
 		const monthsShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-		let today = new Date();
-		let day = today.getDay();
+		var today = new Date();
+		var day = today.getDay();
 
 
 		return monthsShort[(today.getMonth())];
 	}
 
+	/**
+	 * Takes weather ID from openweathermap and returns corresponding emoji as string
+	 * @param {number} weatherId - weather ID from openweathermap
+	 * @return {string} Weather condition string as emoji
+	 */
 	function getIconForWeather(weatherId) {
-		let weatherIdString = weatherId.toString(10);
-		let idFirstNumber = weatherIdString.charAt(0);
+		var weatherIdString = weatherId.toString(10);
+		var idFirstNumber = weatherIdString.charAt(0);
 
 		// if weather condition id starts with 8, use the full id, otherwise only the first number
-		let lookUpId = parseInt(idFirstNumber) == 8 ? weatherId : idFirstNumber;
+		var lookUpId = parseInt(idFirstNumber) == 8 ? weatherId : idFirstNumber;
 
-		let emojiLookup = {
+		var emojiLookup = {
 			2: '🌪', // thunderstorm
 			3: '🌧', // drizzle: light rain
 			5: '☔️', // rain
@@ -454,33 +488,39 @@
 		return emojiLookup[lookUpId];
 	}
 
-	/* Return Day from Timestamp */
+	/**
+	 * Takes timestamp and returns day of the month as number
+	 * @param {number} timestamp - Timestamp of weather condition
+	 * @return {number} Day of month as number
+	 */
 	function getDayOfMonthFromTimestamp(timestamp) {
 		var date;
 		var dayOfMonth;
 
 		date = new Date(timestamp * 1000);
 		dayOfMonth = date.getDate();
-
 		return dayOfMonth;
 	}
 
-	/* Return Time from Timestamp */
+	/**
+	 * Takes timestamp and returns it human-readable
+	 * @param {number} timestamp - Timestamp of weather condition
+	 * @return {string} Time in human-readable format hh:mm
+	 */
 	function getTimeFromTimestamp(timestamp) {
 		var date;
 		var hour;
 
 		date = new Date(timestamp * 1000);
-
 		hour = date.toLocaleTimeString();
-
 		return hour.slice(0, -3);
 	}
 
-
-
+	/**
+	 * Initialize click listeners
+	 */
 	function initClickListener() {
-		/* Reset Highlights Data to today */
+		// Reset highlights data to today
 		elements.setDayTodayBtn.addEventListener('click', function() {
 			this.classList.remove('active');
 			findAll(".js_day").forEach((el) => el.classList.remove("active"));
@@ -488,48 +528,57 @@
 			displayWeather(weatherDataTemp, 0, 1);
 		});
 
-		/* Settings: Close */
+		// Settings: close trigger
 		elements.settingsClose.addEventListener('click', function() {
 			elements.settingsWindow.classList.remove('active');
-			document.querySelector('.js_blur_bg').classList.remove('active');
+			elements.settingsBlurBg.classList.remove('active');
 		});
 
+		elements.settingsBlurBg.addEventListener('click', function() {
+			elements.settingsWindow.classList.remove('active');
+			this.classList.remove('active');
+		});
 
-		/* Settings: Open Trigger */
+		// Settings: open trigger
 		elements.settingsOpen.addEventListener('click', function() {
 			elements.settingsWindow.classList.add('active');
-			document.querySelector('.js_blur_bg').classList.add('active');
+			elements.settingsBlurBg.classList.add('active');
 		});
 
-		// city search
-		let citySearchApi;
-		let citySearchLength = 0;
 
-
-		/* Settings: City Search Input */
+		var citySearchApi;
+		var citySearchLength = 0;
+		// Settings: City search input - fetch openweathermap api for city names
 		elements.settingsLocation.addEventListener('keyup', function() {
-			let val = this.value;
-			let valLenght = this.value.length;
+			var val = this.value;
+			var valLenght = this.value.length;
 			citySearchApi = `http://api.openweathermap.org/geo/1.0/direct?q=${this.value}&limit=5&appid=${weatherApiKey}`;
 
-			// City Search
 			if (valLenght > 1) {
 				fetch(citySearchApi)
 					.then(response => response.json())
 					.then(data => {
 						autocomplete(elements.settingsLocation, data, val);
 					})
-					.catch(() => {});
+					.catch(() => {
+						// show confirm dialog and reload page, if an error occurs
+						// if (confirm("Oops!\nAn error occured while fetching data.\nReloading the page might fix this issue.")) {
+						// 	location.reload();
+						// }
+					});
 			}
 		});
 
+		// On city selection - fetch weather for it
 		elements.settingsLocation.addEventListener('change', function() {
 			var me = this;
-			fetchWeather(savedSettings.tempMode === 'celcius' ? 'metric' : 'imperial', me.dataset.lat, me.dataset.lon);
+
+			window.setTimeout(function() {
+				fetchWeather(savedSettings.tempMode === 'celcius' ? 'metric' : 'imperial', me.dataset.lat, me.dataset.lon, me.dataset.city);
+			}, 300);
 		});
 
-		/* Settings: Temperature Mode */
-		/* On: Celsius, Off: Fahrenheit */
+		// Settings: Temperature mode; true: 'celius', false: 'fahrenheit'
 		elements.settingsTempBool.addEventListener('change', function() {
 			var checked = this.checked;
 			if (this.checked) {
@@ -541,15 +590,12 @@
 			}
 
 			// Save selected value to chrome storage
-			if (!devMode) {
-				chrome.storage.sync.set({
-					settingsTempmode: checked ? 'celcius' : 'fahrenheit'
-				});
-			}
+			chrome.storage.sync.set({
+				settingsTempmode: checked ? 'celcius' : 'fahrenheit'
+			});
 		});
 
-		/* Settings: Wind Mode */
-		/* On: Meter/Second; Off: Miles/Hour */
+		// Settings: Wind Mode; true: 'kmh', false: 'mph'
 		elements.settingsWindBool.addEventListener('change', function() {
 			if (this.checked) {
 				savedSettings.windMode = 'kmh';
@@ -558,16 +604,14 @@
 			}
 
 			// Save selected value to chrome storage
-			if (!devMode) {
-				chrome.storage.sync.set({
-					settingsWindmode: savedSettings.windMode
-				});
-			}
+			chrome.storage.sync.set({
+				settingsWindmode: savedSettings.windMode
+			});
 
 			elements.wind.textContent = setWindSpeed(savedSettings.windSpeed);
 		});
 
-		/* Settings: Dark Mode */
+		// Settings: Dark mode
 		elements.settingsDarkmodeBool.addEventListener('change', function() {
 			if (this.checked) {
 				document.body.classList.add('darkmode');
@@ -576,12 +620,9 @@
 			}
 
 			// Save selected value to chrome storage
-			if (!devMode) {
-				chrome.storage.sync.set({
-					settingsDarkmode: this.checked
-				});
-			}
+			chrome.storage.sync.set({
+				settingsDarkmode: this.checked
+			});
 		});
 	}
-
 })();

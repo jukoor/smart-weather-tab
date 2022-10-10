@@ -116,26 +116,28 @@
 	height: 100%;
 }
 
-.settings.active {
+.app .settings.active {
 	pointer-events: all;
 	transform: translateX(0);
 }
 
-.blur_bg {
+.app .blur_bg {
 	position: absolute;
 	top: 0;
 	width: 100vw;
 	height: 100vh;
 	left: 0;
 	background: hsl(0deg 0% 0% / 60%);
-	z-index: -1;
-	transition: backdrop-filter .5s linear;
+	z-index: 2;
+	opacity: 0;
+	transition: backdrop-filter .5s linear, opacity .5s linear;
+	pointer-events: none;
 }
 
-.blur_bg.active {
-	transition: backdrop-filter .5s linear;
-	backdrop-filter: grayscale(1);
-	z-index: 2;
+.app .blur_bg.active {
+	opacity: 1;
+	backdrop-filter: grayscale(1) blur(5px);
+	pointer-events: all;
 }
 
 .app .settings .top_toolbar {
@@ -173,7 +175,7 @@
 }
 
 .app .settings .toggle:hover::before {
-	transition: opacity 0s linear 1.25s;
+	transition: opacity .3s linear 1.25s;
 	opacity: 1;
 }
 
@@ -194,7 +196,7 @@
 }
 
 .app .settings .toggle:hover::after {
-	transition: opacity 0s linear 1.25s;
+	transition: opacity .3s linear 1.25s;
 	opacity: 1;
 }
 

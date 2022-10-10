@@ -1,0 +1,6 @@
+- Cleanup JS
+- Merge, minify, inline css,
+- Merge, minify JS
+- readme.md finalisieren
+- Chrome Extension hochladen (5$)
+- Loading Anim while fetching weather

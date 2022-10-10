@@ -37,6 +37,8 @@
 
 .autocomplete strong {
 	color: #333;
+	align-self: flex-start;
+	font-weight: 700;
 }
 
 .autocomplete .country_icon {

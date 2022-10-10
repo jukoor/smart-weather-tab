@@ -1,7 +1,10 @@
+/* Source: https://www.w3schools.com/howto/howto_js_autocomplete.asp */
+
 function autocomplete(inp, arr, value) {
 	var currentFocus;
 
 	var a, b, i, val = value;
+	var substring = '';
 	var countryIcon;
 	/*close any already open lists of autocompleted values*/
 	closeAllLists();
@@ -30,12 +33,15 @@ function autocomplete(inp, arr, value) {
 			/*make the matching letters bold:*/
 			var c = document.createElement("P");
 			c.classList.add('listitem');
-			b.innerHTML = "<strong>" + arr[i].name.substr(0, val.length) + "</strong>";
-			b.innerHTML += arr[i].name.substr(val.length);
+
+			substring = arr[i].name.substr(val.length);
 			if (arr[i].state) {
-				b.innerHTML += ", " + arr[i].state;
+				substring += ", " + arr[i].state;
 			}
-			b.innerHTML += ", " + arr[i].country;
+			substring += ", " + arr[i].country;
+
+			b.innerHTML = "<span><strong>" + arr[i].name.substr(0, val.length) + "</strong><span>" + substring + "</span></span>";
+
 			/*insert a input field that will hold the current array item's value:*/
 			b.innerHTML += "<input type='hidden' value='" + arr[i].name + "'>";
 
@@ -45,6 +51,7 @@ function autocomplete(inp, arr, value) {
 			c.addEventListener("click", function(e) {
 				inp.dataset.lat = this.dataset.lat;
 				inp.dataset.lon = this.dataset.lon;
+				inp.dataset.city = this.querySelector('input').value;
 
 				inp.value = this.getElementsByTagName("input")[0].value;
 
