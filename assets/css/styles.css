@@ -53,6 +53,7 @@ p {
 	height: 100vh;
 	overflow: hidden;
 	background: whitesmoke;
+	/* display: flex; */
 }
 
 .app .video_container {
@@ -119,15 +120,14 @@ p {
 
 /* === 02 WEATHER === */
 .app .weather {
-	position: absolute;
+	display: grid;
+	grid-template-rows: auto auto;
+	grid-template-columns: 1fr 1fr;
+	max-width: 65rem;
+	margin: 0 auto;
 	top: 50%;
-	z-index: 1;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 95vw;
-	min-width: 300px;
-	max-width: 1000px;
-	border-radius: 25px;
+	gap: 60px 42px;
+	transform: translateY(-50%);
 }
 
 .app .author {
@@ -163,6 +163,14 @@ p {
 	height: 275px;
 	background-position: left center;
 	position: relative;
+	grid-column: 1 / 3;
+	grid-row: 1 / 2;
+	margin: 0;
+}
+
+.app .weather .current_details {
+	grid-column: 1 / 2;
+	grid-row: 2 / 3;
 }
 
 .app .weather .current_weather::before {
@@ -175,6 +183,12 @@ p {
 	z-index: 1;
 	display: block;
 	height: 100%;
+}
+
+.app .weather .detail_data {
+	display: flex;
+	flex-wrap: wrap;
+	border-radius: 25px;
 }
 
 .app .weather .current_weather .bg_img_container {
