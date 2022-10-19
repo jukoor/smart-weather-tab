@@ -88,9 +88,9 @@ p {
 }
 
 .heading .set_date_today {
-	font-weight: 400;
-	font-size: 0.8rem;
-	line-height: 0.8rem;
+	font-weight: 700;
+	font-size: 12px;
+	line-height: 1;
 	position: absolute;
 	right: 0;
 	top: 50%;
@@ -99,7 +99,8 @@ p {
 	border-radius: 15px;
 	cursor: pointer;
 	color: #333;
-	letter-spacing: 2px;
+	letter-spacing: 0;
+	text-transform: uppercase;
 	font-weight: 600;
 	border: 2px solid #009688;
 	transition: all .2s ease-out;
@@ -189,6 +190,7 @@ p {
 	display: flex;
 	flex-wrap: wrap;
 	border-radius: 25px;
+	height: 310px;
 }
 
 .app .weather .current_weather .bg_img_container {
@@ -222,7 +224,7 @@ p {
 .app .weather .box {
 	flex: 1;
 	flex-basis: 47%;
-	padding: 2.1rem 6px;
+	padding: 1.1rem 6px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -277,7 +279,6 @@ p {
 }
 
 .app .weather .description {
-	text-transform: capitalize;
 	text-align: center;
 	background: #5252527d;
 	display: inline-block;
@@ -290,9 +291,8 @@ p {
 	margin-top: 11px;
 }
 
-.app .weather .description .emoji {
-	display: inline-block;
-	margin-right: 10px;
+.app .weather .description:first-letter {
+	margin-right: 5px;
 }
 
 .app .weather .temp {
@@ -333,15 +333,16 @@ body[data-temp-mode="imperial"] .app .weather .temp::after {
 .app .forecast {}
 
 .app .forecast_list {
-	margin: 0px;
+	margin: 5px;
 	padding: 10px;
 	background: #fff;
 	border-radius: 15px;
 	width: 100%;
-	height: 86%;
+	height: 305px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-around;
+	margin-top: 20px;
 }
 
 .app .forecast_list .day {
@@ -441,7 +442,22 @@ body[data-temp-mode="imperial"] .app .weather .temp::after {
 }
 
 /* === 04 RESPONSIVE === */
-@media (max-width: 1440px) {
+@media (max-height: 820px) {
+	.app .weather {
+		gap: 30px 20px;
+	}
+
+	.app .heading {
+		font-size: 1.4rem;
+		line-height: 1;
+	}
+}
+
+@media (max-width: 1439px) {
+	.app .weather {
+		gap: 30px 20px;
+	}
+
 	.app .weather .current_weather {
 		margin-bottom: 2rem;
 		height: 240px;
@@ -481,5 +497,31 @@ body[data-temp-mode="imperial"] .app .weather .temp::after {
 
 	.app .weather .box .title {
 		font-size: 10px;
+	}
+}
+
+@media (max-width: 1199px) {
+	.app .weather {
+		padding: 0 30px;
+	}
+}
+
+@media (max-width: 767px) {
+	.app .background {
+		overflow-y: auto;
+	}
+
+	.app .weather {
+		display: flex;
+		flex-direction: column;
+		margin: 50px 0;
+	}
+
+	.app .weather .current_weather {
+		margin: 0;
+	}
+
+	.app .weather .box {
+		padding: 15px 5px;
 	}
 }

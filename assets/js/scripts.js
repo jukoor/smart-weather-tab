@@ -7,7 +7,7 @@
 
 	// API Keys
 	const weatherApiKey = apikeys.OWM_API_KEY;
-	const clientId = apikeys.UNSPLASH_CLIENT_ID;
+	// const clientId = apikeys.UNSPLASH_CLIENT_ID;
 
 	// Unsplash API
 	// const unsplashUrl = `https://api.unsplash.com/photos/random?query=landscape&client_id=${clientId}`;
@@ -21,7 +21,7 @@
 		cityLon: 0,
 		cityName: '',
 		cityCountry: '',
-		tempMode: 'celcius',
+		tempMode: 'celsius',
 		windMode: 'kmh',
 		windSpeed: 0,
 		darkMode: false
@@ -36,8 +36,7 @@
 		videoSource: find('.js_video_source'),
 		date: find('.js_date'),
 		temp: find('.js_temp'),
-		description: find('.js_description .js_value'),
-		descriptionEmoji: find('.js_emoji'),
+		description: find('.js_description'),
 		tempMinMax: find('.js_temp_min_max .value'),
 		chanceOfRain: find('.js_chance_of_rain .js_value'),
 		uvIndex: find('.js_uv_index .js_value'),
@@ -80,6 +79,10 @@
 			// If there is a value, set value to input element and trigger change event
 			if (data !== undefined) {
 				savedSettings.cityName = data.cityName;
+			} else {
+				chrome.storage.sync.set({
+					cityName: ''
+				});
 			}
 		});
 
@@ -121,15 +124,15 @@
 		chrome.storage.sync.get('settingsTempmode', function(data) {
 			// If there is a value, set value to input element and trigger change event
 			if (data !== undefined) {
-				elements.settingsTempBool.checked = data.settingsTempmode === 'celcius' ? true : false;
+				elements.settingsTempBool.checked = data.settingsTempmode === 'celsius' ? true : false;
 				// Create a new 'change' event
 				var event = new Event('change');
 				// Dispatch it.
 				elements.settingsWindBool.dispatchEvent(event);
 			} else {
-				// if there is no data, like on the first try, write default value "kmh"
+				// if there is no data, like on the first try, write default value "celsius"
 				chrome.storage.sync.set({
-					settingsWindmode: 'kmh'
+					settingsTempmode: 'celsius'
 				});
 			}
 		});
@@ -147,9 +150,9 @@
 			if (data.settingsTempmode !== undefined) {
 				savedSettings.tempMode = data.settingsTempmode;
 			} else {
-				// set default value to 'celcius'
+				// set default value to 'celsius'
 				chrome.storage.sync.set({
-					settingsTempmode: 'celcius'
+					settingsTempmode: 'celsius'
 				});
 			}
 		});
@@ -190,7 +193,7 @@
 				}
 			});
 			// Fetch weather
-			fetchWeather(savedSettings.tempMode === 'celcius' ? 'metric' : 'imperial', coordinates.latitude, coordinates.longitude);
+			fetchWeather(savedSettings.tempMode, coordinates.latitude, coordinates.longitude);
 		}
 
 		function error(err) {
@@ -200,7 +203,7 @@
 		// if user location is already known - use the one stored instead of finding it
 		chrome.storage.sync.get('userLocation', function(data) {
 			if (data.userLocation !== undefined) {
-				fetchWeather(savedSettings.tempMode === 'celcius' ? 'metric' : 'imperial', data.userLocation.lat, data.userLocation.long, savedSettings.cityName);
+				fetchWeather(savedSettings.tempMode, data.userLocation.lat, data.userLocation.long, savedSettings.cityName);
 			} else {
 				navigator.geolocation.getCurrentPosition(success, error, options);
 			}
@@ -209,7 +212,7 @@
 
 	/**
 	 * Fetches WeatherData from openweathermap API
-	 * @param {string} weatherUnit - Weather unit 'metric' or 'imperial'
+	 * @param {string} weatherUnit - Weather unit 'celsius' or 'fahrenheit'
 	 * @param {number} lat - Location coordinates latitute
 	 * @param {number} long - Location coordinates longitude
 	 * @param {string} city - City name, selected after citysearch-autocomplete
@@ -221,12 +224,38 @@
 		var userPosLong = long;
 		var weatherUrl;
 
+		fetchAndDisplayUserLocation(userPosLat, userPosLong, city);
+
+		// var berlinlat = '52.5071778';
+		// var berlinLong = '13.4468267';
+		// weatherUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${userPosLat}&lon=${userPosLong}&appid=${weatherApiKey}&units=${unit}&exclude=minutely,hourly`;
+		weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${userPosLat}&longitude=${userPosLong}&hourly=temperature_2m,precipitation,weathercode,windspeed_10m&daily=sunrise,sunset&current_weather=true&temperature_unit=${unit}&timezone=auto`;
+		// fetch weather data and display it
+		fetch(weatherUrl)
+			.then(response => response.json())
+			.then(data => {
+				displayWeather(data, 0, weatherUnit);
+				weatherDataTemp = data;
+				document.body.dataset.tempMode = '';
+				document.body.dataset.tempMode = unit;
+			}).catch(function(error) {
+				console.log(error);
+			});
+	}
+
+
+	/**
+	 * Reverse geocoding user location and display corresponding city and country
+	 * @param {number} lat - Location coordinates latitute
+	 * @param {number} long - Location coordinates longitude
+	 */
+	function fetchAndDisplayUserLocation(lat, long, city) {
+
 		// Fetch cities from coordinates: reverse geocoding
-		var cityFromCrds = `http://api.openweathermap.org/geo/1.0/reverse?lat=${userPosLat}&lon=${userPosLong}&limit=5&appid=${weatherApiKey}`;
+		var cityFromCrds = `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${long}&limit=5&appid=${weatherApiKey}`;
 		fetch(cityFromCrds)
 			.then(response => response.json())
 			.then(data => {
-
 				// Display user location: city and country
 				if (city) {
 					elements.locationCity.textContent = city;
@@ -263,22 +292,6 @@
 				// } else {}
 			});
 
-
-		// var berlinlat = '52.5071778';
-		// var berlinLong = '13.4468267';
-		weatherUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${userPosLat}&lon=${userPosLong}&appid=${weatherApiKey}&units=${unit}&exclude=minutely,hourly`;
-
-		// fetch weather data and display it
-		fetch(weatherUrl)
-			.then(response => response.json())
-			.then(data => {
-				displayWeather(data, 0, weatherUnit);
-				weatherDataTemp = data;
-				document.body.dataset.tempMode = '';
-				document.body.dataset.tempMode = unit;
-			}).catch(function(error) {
-				console.log(error);
-			});
 	}
 
 	/**
@@ -289,23 +302,23 @@
 	function displayWeather(weatherData, day, weatherUnit) {
 		console.log(weatherData);
 
-		// Current weather condition
-		elements.temp.textContent = Math.round(weatherData.current.temp, 2);
-		elements.descriptionEmoji.textContent = getIconForWeather(weatherData.current.weather[0].id);
-		elements.description.textContent = weatherData.current.weather[0].description;
+		// Current weather condition getCurrentTemp()
+		elements.temp.textContent = Math.round(weatherData.current_weather.temperature, 2);
+		elements.description.textContent = getIconForWeather(weatherData.hourly.weathercode[new Date().getHours()]);
 
 		// Highlights
-		elements.tempMinMax.textContent = Math.round(weatherData.daily[day].temp.max, 2) + '° / ' + Math.round(weatherData.daily[day].temp.min, 2) + '°';
-		elements.chanceOfRain.textContent = Math.round(weatherData.daily[day].pop * 100, 2) + '%';
-		elements.uvIndex.textContent = Math.round(weatherData.daily[day].uvi, 2);
-		elements.wind.textContent = setWindSpeed(weatherData.daily[day].wind_speed);
-		elements.sunriseSunset.textContent = getTimeFromTimestamp(weatherData.daily[day].sunrise) + ' / ' + getTimeFromTimestamp(weatherData.daily[day].sunset);
-		fetchAndSetAirQualityData(day);
+		// elements.tempMinMax.textContent = Math.round(weatherData.daily[day].temp.max, 2) + '° / ' + Math.round(weatherData.daily[day].temp.min, 2) + '°';
+		// elements.chanceOfRain.textContent = Math.round(weatherData.daily[day].pop * 100, 2) + '%';
+		// elements.uvIndex.textContent = Math.round(weatherData.daily[day].uvi, 2);
+		elements.wind.textContent = setWindSpeed(weatherData.current_weather.windspeed);
+		// elements.wind.textContent = weatherData.current_weather.windspeed;
+		// elements.sunriseSunset.textContent = getTimeFromTimestamp(weatherData.daily[day].sunrise) + ' / ' + getTimeFromTimestamp(weatherData.daily[day].sunset);
+		// fetchAndSetAirQualityData(day);
 
-		elements.bgImg.src = 'assets/img/weather/' + weatherData.current.weather[0].icon + '.jpg';
+		// elements.bgImg.src = 'assets/img/weather/' + weatherData.current.weather[0].icon + '.jpg';
 
 		if (day === 0) {
-			createForecastList(weatherData);
+			// createForecastList(weatherData);
 		}
 	}
 
@@ -316,21 +329,12 @@
 	function setWindSpeed(windSpeed) {
 		savedSettings.windSpeed = windSpeed;
 
-		var windMode;
+		var windMode = savedSettings.windMode;
 
-		// Save selected value to chrome storage
-		chrome.storage.sync.get('settingsWindmode', function(data) {
-			windMode = data.settingsWindmode;
-		});
-
-		if (savedSettings.tempMode == 'celcius' && savedSettings.windMode == 'kmh') {
-			return Math.round((savedSettings.windSpeed * 3.6), 2) + " km/h";
-		} else if (savedSettings.tempMode == 'celcius' && savedSettings.windMode == 'mph') {
-			return Math.round((savedSettings.windSpeed * 2.237), 2) + " mph";
-		} else if (savedSettings.tempMode == 'fahrenheit' && savedSettings.windMode == 'kmh') {
-			return Math.round((savedSettings.windSpeed * 1.61), 2) + " km/h";
-		} else if (savedSettings.tempMode == 'fahrenheit' && savedSettings.windMode == 'mph') {
-			return Math.round(savedSettings.windSpeed) + " mph";
+		if (windMode == 'kmh') {
+			return Math.round(savedSettings.windSpeed, 2) + " km/h";
+		} else if (windMode == 'mph') {
+			return Math.round(savedSettings.windSpeed / 1.609, 2) + " mph";
 		}
 	}
 
@@ -461,31 +465,46 @@
 	}
 
 	/**
-	 * Takes weather ID from openweathermap and returns corresponding emoji as string
+	 * Takes weather ID from API and returns corresponding emoji as string plus text
 	 * @param {number} weatherId - weather ID from openweathermap
-	 * @return {string} Weather condition string as emoji
+	 * @return {string} Weather condition string as emoji and text
 	 */
 	function getIconForWeather(weatherId) {
-		var weatherIdString = weatherId.toString(10);
-		var idFirstNumber = weatherIdString.charAt(0);
+		console.log(weatherId);
 
-		// if weather condition id starts with 8, use the full id, otherwise only the first number
-		var lookUpId = parseInt(idFirstNumber) == 8 ? weatherId : idFirstNumber;
-
+		// simpliefied WMO Weather interpretation codes
 		var emojiLookup = {
-			2: '🌪', // thunderstorm
-			3: '🌧', // drizzle: light rain
-			5: '☔️', // rain
-			6: '❄️', // snow
-			7: '🌀', // atmosphere: smoke/dust
-			800: '☀️', // clear sky/sun
-			801: '🌤', // few clouds
-			802: '⛅️', // medium clouds
-			803: '🌥', // many clouds
-			804: '☁️' // complete clouds
+			0: '☀️ Clear sky',
+			1: '🌤 Mainly clear',
+			2: '⛅️ Partly cloudy',
+			3: '☁️ Overcast',
+			45: '🌫 Fog',
+			46: '🌫 Depositing rime fog',
+			51: '🌧 Drizzle (light)',
+			53: '🌧 Drizzle (moderate)',
+			55: '🌧 Drizzle (dense)',
+			56: '🌨 Freezing Drizzle (light)',
+			57: '🌨 Freezing Drizzle (dense)',
+			61: '🌧 Rain (slight)',
+			63: '🌧 Rain (moderate)',
+			65: '🌧 Rain (heavy)',
+			66: '🌨 Freezing Rain (light)',
+			67: '🌨 Freezing Rain (heavy)',
+			71: '❄️ Snow (slight)',
+			73: '❄️ Snow (moderate)',
+			75: '❄️ Snow (heavy)',
+			77: '❄️ Snow grains',
+			80: '🌧 Rain showers (light)',
+			81: '🌧 Rain showers (moderate)',
+			82: '🌧 Rain showers (violent)',
+			85: '❄️ Snow showers (slight)',
+			86: '❄️ Snow showers (heavy)',
+			95: '🌪 Thunderstorm',
+			96: '🌪 Thunderstorm with hail (slight)',
+			99: '🌪 Thunderstorm with hail (heavy)'
 		};
 
-		return emojiLookup[lookUpId];
+		return emojiLookup[weatherId];
 	}
 
 	/**
@@ -574,7 +593,7 @@
 			var me = this;
 
 			window.setTimeout(function() {
-				fetchWeather(savedSettings.tempMode === 'celcius' ? 'metric' : 'imperial', me.dataset.lat, me.dataset.lon, me.dataset.city);
+				fetchWeather(savedSettings.tempMode, me.dataset.lat, me.dataset.lon, me.dataset.city);
 			}, 300);
 		});
 
@@ -582,16 +601,16 @@
 		elements.settingsTempBool.addEventListener('change', function() {
 			var checked = this.checked;
 			if (this.checked) {
-				savedSettings.tempMode = 'celcius';
-				fetchWeather('metric', savedSettings.cityLat, savedSettings.cityLon);
+				savedSettings.tempMode = 'celsius';
 			} else {
 				savedSettings.tempMode = 'fahrenheit';
-				fetchWeather('imperial', savedSettings.cityLat, savedSettings.cityLon);
 			}
+
+			fetchWeather(savedSettings.tempMode, savedSettings.cityLat, savedSettings.cityLon);
 
 			// Save selected value to chrome storage
 			chrome.storage.sync.set({
-				settingsTempmode: checked ? 'celcius' : 'fahrenheit'
+				settingsTempmode: checked ? 'celsius' : 'fahrenheit'
 			});
 		});
 

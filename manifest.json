@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Smart Weather Tab",
   "version": "1.0",
-  "description": "Display weather in a smart and beautiful way. See the current weather and a 5 day forecast.",
+  "description": "Display weather in a smart and beautiful way. See the current weather condition and a 5 day forecast.",
   "author": "Julian Orth",
   "chrome_url_overrides" : {
     "newtab": "index.html"
