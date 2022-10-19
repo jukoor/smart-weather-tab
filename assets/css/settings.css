@@ -130,7 +130,7 @@
 	background: hsl(0deg 0% 0% / 60%);
 	z-index: 2;
 	opacity: 0;
-	transition: backdrop-filter .5s linear, opacity .5s linear;
+	/* transition: backdrop-filter .5s linear, opacity .5s linear; */
 	pointer-events: none;
 }
 
@@ -323,6 +323,10 @@
 }
 
 .app .settings .settings_footer p {
+	color: grey;
+}
+
+.app .settings .settings_footer p a {
 	color: grey;
 }
 

@@ -226,10 +226,8 @@
 
 		fetchAndDisplayUserLocation(userPosLat, userPosLong, city);
 
-		// var berlinlat = '52.5071778';
-		// var berlinLong = '13.4468267';
-		// weatherUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${userPosLat}&lon=${userPosLong}&appid=${weatherApiKey}&units=${unit}&exclude=minutely,hourly`;
-		weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${userPosLat}&longitude=${userPosLong}&hourly=temperature_2m,precipitation,weathercode,windspeed_10m&daily=sunrise,sunset&current_weather=true&temperature_unit=${unit}&timezone=auto`;
+		weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${userPosLat}&longitude=${userPosLong}&hourly=temperature_2m,precipitation,weathercode&daily=shortwave_radiation_sum,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,windspeed_10m_max,shortwave_radiation_sum&current_weather=true&temperature_unit=${unit}&windspeed_unit=mph&timezone=auto`;
+
 		// fetch weather data and display it
 		fetch(weatherUrl)
 			.then(response => response.json())
@@ -307,15 +305,14 @@
 		elements.description.textContent = getIconForWeather(weatherData.hourly.weathercode[new Date().getHours()]);
 
 		// Highlights
-		// elements.tempMinMax.textContent = Math.round(weatherData.daily[day].temp.max, 2) + '° / ' + Math.round(weatherData.daily[day].temp.min, 2) + '°';
-		// elements.chanceOfRain.textContent = Math.round(weatherData.daily[day].pop * 100, 2) + '%';
+		elements.tempMinMax.textContent = Math.round(weatherData.daily.temperature_2m_min[day], 2) + '° / ' + Math.round(weatherData.daily.temperature_2m_max[0], 2) + '°';
+		elements.chanceOfRain.textContent = Math.round(weatherData.daily.precipitation_sum[day], 2) + ' mm';
 		// elements.uvIndex.textContent = Math.round(weatherData.daily[day].uvi, 2);
 		elements.wind.textContent = setWindSpeed(weatherData.current_weather.windspeed);
-		// elements.wind.textContent = weatherData.current_weather.windspeed;
-		// elements.sunriseSunset.textContent = getTimeFromTimestamp(weatherData.daily[day].sunrise) + ' / ' + getTimeFromTimestamp(weatherData.daily[day].sunset);
-		// fetchAndSetAirQualityData(day);
+		elements.sunriseSunset.textContent = getTimeFromTimestamp(weatherData.daily.sunrise[day]) + ' / ' + getTimeFromTimestamp(weatherData.daily.sunset[day]);
+		fetchAndSetAirQualityData(day);
 
-		// elements.bgImg.src = 'assets/img/weather/' + weatherData.current.weather[0].icon + '.jpg';
+		elements.bgImg.src = 'assets/img/weather/' + weatherData.hourly.weathercode[new Date().getHours()] + '.jpg';
 
 		if (day === 0) {
 			// createForecastList(weatherData);
@@ -339,19 +336,21 @@
 	}
 
 	/**
-	 * Fetches openweathermap air pollution API and displays value
+	 * Fetches open meteo air pollution API and displays value
 	 * @param {number} day - Number of day in the week starting at zero to fetch weather for that day
 	 */
 	function fetchAndSetAirQualityData(day) {
-
-		const airPollutionUrl = `http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${savedSettings.cityLat}&lon=${savedSettings.cityLon}&appid=${weatherApiKey}`;
+		console.log(savedSettings.cityLat, savedSettings.cityLon);
+		const airPollutionUrl = 'https://air-quality-api.open-meteo.com/v1/air-quality?latitude=52.5235&longitude=13.4115&hourly=pm10,uv_index';
 		const ratings = ['Good', 'Fair', 'Moderate', 'Bad', 'Unhealthy'];
 
 		// Air Quality API
 		fetch(airPollutionUrl)
 			.then(response => response.json())
 			.then(data => {
-				elements.airquality.textContent = ratings[data.list[0].main.aqi - 1];
+				connsole.log(data);
+				// elements.airquality.textContent = ratings[data.list[0].main.aqi - 1];
+				// elements.airquality.textContent = data.
 			})
 			.catch(() => {
 				console.log("Air Quality Index temporarily not available. Please try again later.");
@@ -470,7 +469,6 @@
 	 * @return {string} Weather condition string as emoji and text
 	 */
 	function getIconForWeather(weatherId) {
-		console.log(weatherId);
 
 		// simpliefied WMO Weather interpretation codes
 		var emojiLookup = {
@@ -527,11 +525,10 @@
 	 * @return {string} Time in human-readable format hh:mm
 	 */
 	function getTimeFromTimestamp(timestamp) {
-		var date;
-		var hour;
 
-		date = new Date(timestamp * 1000);
+		date = new Date(timestamp);
 		hour = date.toLocaleTimeString();
+		// remove seconds
 		return hour.slice(0, -3);
 	}
 
