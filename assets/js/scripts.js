@@ -225,8 +225,8 @@
 		var weatherUrl;
 
 		fetchAndDisplayUserLocation(userPosLat, userPosLong, city);
-
-		weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${userPosLat}&longitude=${userPosLong}&hourly=temperature_2m,precipitation,weathercode&daily=shortwave_radiation_sum,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,windspeed_10m_max,shortwave_radiation_sum&current_weather=true&temperature_unit=${unit}&windspeed_unit=mph&timezone=auto`;
+		// console.log()
+		weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${userPosLat}&longitude=${userPosLong}&hourly=temperature_2m,precipitation&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,windspeed_10m_max&current_weather=true&temperature_unit=${unit}&timezone=auto`;
 
 		// fetch weather data and display it
 		fetch(weatherUrl)
@@ -234,13 +234,11 @@
 			.then(data => {
 				displayWeather(data, 0, weatherUnit);
 				weatherDataTemp = data;
-				document.body.dataset.tempMode = '';
 				document.body.dataset.tempMode = unit;
 			}).catch(function(error) {
 				console.log(error);
 			});
 	}
-
 
 	/**
 	 * Reverse geocoding user location and display corresponding city and country
@@ -298,24 +296,23 @@
 	 * @param {number} day - Number of day in the week starting at zero to fetch weather for that day
 	 */
 	function displayWeather(weatherData, day, weatherUnit) {
-		console.log(weatherData);
 
-		// Current weather condition getCurrentTemp()
+		// Current weather condition
 		elements.temp.textContent = Math.round(weatherData.current_weather.temperature, 2);
-		elements.description.textContent = getIconForWeather(weatherData.hourly.weathercode[new Date().getHours()]);
+		elements.description.textContent = getIconForWeather(weatherData.current_weather.weathercode);
 
 		// Highlights
 		elements.tempMinMax.textContent = Math.round(weatherData.daily.temperature_2m_min[day], 2) + '° / ' + Math.round(weatherData.daily.temperature_2m_max[0], 2) + '°';
 		elements.chanceOfRain.textContent = Math.round(weatherData.daily.precipitation_sum[day], 2) + ' mm';
-		// elements.uvIndex.textContent = Math.round(weatherData.daily[day].uvi, 2);
+
 		elements.wind.textContent = setWindSpeed(weatherData.current_weather.windspeed);
 		elements.sunriseSunset.textContent = getTimeFromTimestamp(weatherData.daily.sunrise[day]) + ' / ' + getTimeFromTimestamp(weatherData.daily.sunset[day]);
-		fetchAndSetAirQualityData(day);
+		fetchAndSetAirQualityAndUVData();
 
-		elements.bgImg.src = 'assets/img/weather/' + weatherData.hourly.weathercode[new Date().getHours()] + '.jpg';
+		elements.bgImg.src = 'assets/img/weather/' + weatherData.current_weather.weathercode + '.jpg';
 
 		if (day === 0) {
-			// createForecastList(weatherData);
+			createForecastList(weatherData);
 		}
 	}
 
@@ -336,21 +333,34 @@
 	}
 
 	/**
-	 * Fetches open meteo air pollution API and displays value
-	 * @param {number} day - Number of day in the week starting at zero to fetch weather for that day
+	 * Fetches open meteo air pollution API and displays value of air pollution and uv index
 	 */
-	function fetchAndSetAirQualityData(day) {
-		console.log(savedSettings.cityLat, savedSettings.cityLon);
-		const airPollutionUrl = 'https://air-quality-api.open-meteo.com/v1/air-quality?latitude=52.5235&longitude=13.4115&hourly=pm10,uv_index';
-		const ratings = ['Good', 'Fair', 'Moderate', 'Bad', 'Unhealthy'];
+	function fetchAndSetAirQualityAndUVData() {
+		const airPollutionUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${savedSettings.cityLat}&longitude=${savedSettings.cityLon}&hourly=pm10,uv_index`;
+		const ratings = ['Good', 'Fair', 'Poor', 'Very poor', 'Unhealthy'];
+		let airQualityPm10;
+		let airQualityRating;
 
 		// Air Quality API
 		fetch(airPollutionUrl)
 			.then(response => response.json())
 			.then(data => {
-				connsole.log(data);
-				// elements.airquality.textContent = ratings[data.list[0].main.aqi - 1];
-				// elements.airquality.textContent = data.
+
+				airQualityPm10 = data.hourly.pm10[new Date().getHours()];
+				if (airQualityPm10 < 40) {
+					airQualityRating = ratings[0];
+				} else if (airQualityPm10 >= 40 && airQualityPm10 < 80) {
+					airQualityRating = ratings[1];
+				} else if (airQualityPm10 >= 80 && airQualityPm10 < 120) {
+					airQualityRating = ratings[2];
+				} else if (airQualityPm10 >= 120 && airQualityPm10 < 300) {
+					airQualityRating = ratings[3];
+				} else if (airQualityPm10 >= 300) {
+					airQualityRating = ratings[4];
+				}
+
+				elements.airquality.textContent = airQualityRating;
+				elements.uvIndex.textContent = data.hourly.uv_index[new Date().getHours()];
 			})
 			.catch(() => {
 				console.log("Air Quality Index temporarily not available. Please try again later.");
@@ -365,29 +375,32 @@
 	function createForecastList(weatherData) {
 
 		var dailyWeather = weatherData.daily;
+		let weatherCodeFirstChar;
+		console.log(weatherData);
 
 		// Clear list
 		elements.forecastList.innerHTML = '';
 
-		for (var i = 0; i < dailyWeather.length; i++) {
-			var day = dailyWeather[i];
+		for (var i = 0; i < dailyWeather.sunset.length; i++) {
 
-			// Skip days 0 (today), 6 and 7 to create the 5 day forecast, starting tomorrow
+			weatherCodeFirstChar = '' + dailyWeather.weathercode[i];
+			weatherCodeFirstChar = weatherCodeFirstChar.charAt(0);
+			// Skip days 0 (today), 6 and 7 to create the 5 day forecast, starting from tomorrow
 			if ([0, 6, 7].indexOf(i) === -1) {
 				var listItem =
-					`<li class="day js_day" data-idx="${i}" data-day="${getDayOfMonthFromTimestamp(day.dt)}.">
-					<span class="date_day">${getDayFromTimestamp(day.dt)}</span>
-					<span class="icon_description">
-						<img class="day_icon js_day_icon" width="60" src="assets/icons/weather/${day.weather[0].icon}.svg" />
-						<span class="day_description js_day_description">${day.weather[0].main}</span>
-					</span>
-					<span class="day_min_max">
-						<span class="day_max js_day_max">${Math.round(day.temp.max,2)}°</span>
-						<span class="day_min js_day_min">${Math.round(day.temp.min,2)}°</span>
-					</span>
-				</li>`;
+					`<li class="day js_day" data-idx="${i}" data-day="${getDayOfMonthFromTimestamp(dailyWeather.time[i])}">
+						<span class="date_day">${getDayFromTimestamp(dailyWeather.time[i])}</span>
+						<span class="icon_description">
+							<img class="day_icon js_day_icon" width="60" src="assets/icons/weather/${weatherCodeFirstChar}.svg" />
+							<span class="day_description js_day_description">${getIconForWeather(dailyWeather.weathercode[i])}</span>
+						</span>
+						<span class="day_min_max">
+							<span class="day_max js_day_max">${Math.round(dailyWeather.temperature_2m_max[i],2)}°</span>
+							<span class="day_min js_day_min">${Math.round(dailyWeather.temperature_2m_min[i],2)}°</span>
+						</span>
+					</li>`;
 
-				elements.forecastList.appendChild(createItemNode(listItem, i, getDayFromTimestamp(day.dt)));
+				elements.forecastList.appendChild(createItemNode(listItem, i, getDayFromTimestamp(dailyWeather.time[i])));
 			}
 		}
 	}
@@ -433,15 +446,14 @@
 
 	/**
 	 * Takes timestamp and returns day of the week as a string
-	 * @param {number} timestamp - Timestamp of weather condition
-	 * @return {string} Day of the week as string
+	 * @param {string} timestamp - Timestamp of weather condition
 	 */
 	function getDayFromTimestamp(timestamp) {
 		var date;
 		var dayOfWeek;
 		var daysShort = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-		date = new Date(timestamp * 1000);
+		date = new Date(timestamp);
 		dayOfWeek = daysShort[date.getDay()];
 
 		return dayOfWeek;
@@ -478,28 +490,28 @@
 			3: '☁️ Overcast',
 			45: '🌫 Fog',
 			46: '🌫 Depositing rime fog',
-			51: '🌧 Drizzle (light)',
-			53: '🌧 Drizzle (moderate)',
-			55: '🌧 Drizzle (dense)',
-			56: '🌨 Freezing Drizzle (light)',
-			57: '🌨 Freezing Drizzle (dense)',
-			61: '🌧 Rain (slight)',
-			63: '🌧 Rain (moderate)',
-			65: '🌧 Rain (heavy)',
-			66: '🌨 Freezing Rain (light)',
-			67: '🌨 Freezing Rain (heavy)',
-			71: '❄️ Snow (slight)',
-			73: '❄️ Snow (moderate)',
-			75: '❄️ Snow (heavy)',
+			51: '🌧 Drizzle',
+			53: '🌧 Drizzle',
+			55: '🌧 Drizzle',
+			56: '🌨 Freezing Drizzle',
+			57: '🌨 Freezing Drizzle',
+			61: '🌧 Rain',
+			63: '🌧 Rain',
+			65: '🌧 Rain',
+			66: '🌨 Freezing Rain',
+			67: '🌨 Freezing Rain',
+			71: '❄️ Snow',
+			73: '❄️ Snow',
+			75: '❄️ Snow',
 			77: '❄️ Snow grains',
-			80: '🌧 Rain showers (light)',
-			81: '🌧 Rain showers (moderate)',
-			82: '🌧 Rain showers (violent)',
-			85: '❄️ Snow showers (slight)',
-			86: '❄️ Snow showers (heavy)',
+			80: '🌧 Rain showers',
+			81: '🌧 Rain showers',
+			82: '🌧 Rain showers',
+			85: '❄️ Snow showers',
+			86: '❄️ Snow showers',
 			95: '🌪 Thunderstorm',
-			96: '🌪 Thunderstorm with hail (slight)',
-			99: '🌪 Thunderstorm with hail (heavy)'
+			96: '🌪 Thunderstorm with hail',
+			99: '🌪 Thunderstorm with hail'
 		};
 
 		return emojiLookup[weatherId];
@@ -514,7 +526,7 @@
 		var date;
 		var dayOfMonth;
 
-		date = new Date(timestamp * 1000);
+		date = new Date(timestamp);
 		dayOfMonth = date.getDate();
 		return dayOfMonth;
 	}
@@ -594,7 +606,7 @@
 			}, 300);
 		});
 
-		// Settings: Temperature mode; true: 'celius', false: 'fahrenheit'
+		// Settings: Temperature mode; true: 'celsius', false: 'fahrenheit'
 		elements.settingsTempBool.addEventListener('change', function() {
 			var checked = this.checked;
 			if (this.checked) {

@@ -1,19 +1,15 @@
 /* - Author: Julian Orth
    - Version: 1.0
-	 - URL: https://github.com/jukoor/chrome-weather-tab
+	 - URL: https://github.com/jukoor/smart-weather-tab
 	 - Date: 01.01.2023
 	 - Purpose: General App Styles
 
         DIRECTORY
-   00 = FONTS
  	 01 = GLOBAL
 	 02 = WEATHER
 	 03 = FORECAST
 	 04 = RESPONSIVE
 */
-/* === 00 FONTS == */
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;600;700&display=swap');
-
 /* === 01 GLOBAL STYLES === */
 * {
 	box-sizing: border-box;
@@ -82,6 +78,7 @@ p {
 .heading {
 	font-size: 2rem;
 	line-height: 2rem;
+	font-weight: 700;
 	margin-top: 0;
 	position: relative;
 	padding-left: 5px;
@@ -93,19 +90,23 @@ p {
 	line-height: 1;
 	position: absolute;
 	right: 0;
-	top: 50%;
-	transform: translateY(-70%);
+	transform: translateY(-10px);
 	padding: 4px 10px;
 	border-radius: 15px;
 	cursor: pointer;
 	color: #333;
-	letter-spacing: 0;
 	text-transform: uppercase;
-	font-weight: 600;
 	border: 2px solid #009688;
 	transition: all .2s ease-out;
 	opacity: 0;
 	pointer-events: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	width: 65px;
+	height: 22px;
+	top: 0;
 }
 
 .heading .set_date_today:hover {
@@ -114,7 +115,7 @@ p {
 }
 
 .heading .set_date_today.active {
-	transform: translateY(-50%);
+	transform: translateY(5);
 	opacity: 1;
 	pointer-events: all;
 }
@@ -363,7 +364,7 @@ body[data-temp-mode="imperial"] .app .weather .temp::after {
 .app .forecast_list .date_day {
 	display: inline-block;
 	flex: 0 0 34%;
-	font-weight: 400;
+	font-weight: 700;
 }
 
 .app .forecast_list .icon_description {
@@ -375,9 +376,27 @@ body[data-temp-mode="imperial"] .app .weather .temp::after {
 	background-color: #f5f5f5;
 }
 
+.app .forecast_list .day::after {
+	background: #cfcfcf;
+	height: 1px;
+	width: calc(100% - 20px);
+	position: absolute;
+	left: 10px;
+	bottom: 0;
+	content: '';
+}
+
+.app .forecast_list .day:last-child::after {
+	display: none;
+}
+
 .app .forecast_list .day .day_description {
 	backface-visibility: hidden;
 	display: inline-block;
+}
+
+.app .forecast_list .day .day_description::first-letter {
+	visibility: hidden;
 }
 
 .app .forecast_list .day.active {
@@ -436,7 +455,6 @@ body[data-temp-mode="imperial"] .app .weather .temp::after {
 	width: 27px;
 	backface-visibility: hidden;
 	display: inline-block;
-	margin-right: 12px;
 	min-width: 30px;
 	height: auto;
 }
@@ -469,7 +487,7 @@ body[data-temp-mode="imperial"] .app .weather .temp::after {
 	}
 
 	.app .forecast_list .day {
-		padding: 0.5em 1.4rem 0.5rem 5rem;
+		padding: 0.5em 1.4rem 0.5rem 4rem;
 	}
 
 	.app .weather .location {
