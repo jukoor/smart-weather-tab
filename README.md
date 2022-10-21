@@ -4,7 +4,8 @@
 
 Smart Weather Tab is a Google Chrome extension that displays the weather in a beautiful way in your new tab window.
 The user can either enter a city or use the current location to display the latest weather data.
-The weather data shows the current situation, highlights of today, as well as a 5-day weather forecast.
+The weather data shows the current situation, highlights of today, as well as a 5-day weather forecast.  
+
 Different settings for interface or units let you personalize the application.
 Depending on the weather condition, changing background images are displayed.
 For each day in the 5-day list details can be displayed by clicking it.
