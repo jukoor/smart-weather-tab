@@ -1,4 +1,10 @@
-/* Source: https://www.w3schools.com/howto/howto_js_autocomplete.asp */
+/* - Author: w3schools
+   - Version: 1.0
+	 - URL: https://www.w3schools.com/howto/howto_js_autocomplete.asp
+	 - Date: 01.2023
+	 - Purpose: Custom autocomplete dropdown
+	 - Modified by: Julian Orth
+*/
 
 function autocomplete(inp, arr, value) {
 	var currentFocus;
@@ -28,7 +34,7 @@ function autocomplete(inp, arr, value) {
 
 			countryIcon = document.createElement("IMG");
 			countryIcon.classList.add('country_icon');
-			countryIcon.src = "assets/icons/country_flags/" + arr[i].country.toLowerCase() + ".svg";
+			countryIcon.src = "assets/icons/country_flags/" + arr[i].country_code.toLowerCase() + ".svg";
 
 			/*make the matching letters bold:*/
 			var c = document.createElement("P");
@@ -36,7 +42,7 @@ function autocomplete(inp, arr, value) {
 
 			substring = arr[i].name.substr(val.length);
 			if (arr[i].state) {
-				substring += ", " + arr[i].state;
+				substring += ", " + arr[i].admin1;
 			}
 			substring += ", " + arr[i].country;
 
@@ -45,8 +51,8 @@ function autocomplete(inp, arr, value) {
 			/*insert a input field that will hold the current array item's value:*/
 			b.innerHTML += "<input type='hidden' value='" + arr[i].name + "'>";
 
-			c.dataset.lat = arr[i].lat;
-			c.dataset.lon = arr[i].lon;
+			c.dataset.lat = arr[i].latitude;
+			c.dataset.lon = arr[i].longitude;
 
 			c.addEventListener("click", function(e) {
 				inp.dataset.lat = this.dataset.lat;

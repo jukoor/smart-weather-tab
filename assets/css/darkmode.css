@@ -16,10 +16,6 @@ body.darkmode .app .details_and_forecast .detail_data {
 	background: #333;
 }
 
-body.darkmode .app .forecast_list .day {
-	/* background: #333; */
-}
-
 body.darkmode .app .forecast_list .day::before {
 	background: #fff;
 	color: #333;
@@ -52,6 +48,22 @@ body.darkmode .heading .set_date_today {
 
 body.darkmode .app .weather .box {
 	background: #525252;
+}
+
+body.darkmode .app .weather .box .title,
+body.darkmode .app .weather .box .value {
+	color: #fff;
+}
+
+body.darkmode .app .forecast_list .date_day,
+body.darkmode .app .forecast_list .day .day_description,
+body.darkmode .app .forecast .day_max,
+body.darkmode .app .forecast .day_min {
+	color: #fff;
+}
+
+body.darkmode .app .forecast .day_icon {
+	filter: invert(1);
 }
 
 /* /Main Interface */

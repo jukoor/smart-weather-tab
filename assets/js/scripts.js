@@ -1,3 +1,10 @@
+/* - Author: Julian Orth
+   - Version: 1.0
+	 - URL: https://github.com/jukoor/smart-weather-tab
+	 - Date: 01.2023
+	 - Purpose: General application functions
+*/
+
 (function() {
 
 	// Alias
@@ -5,15 +12,7 @@
 	const findAll = document.querySelectorAll.bind(document);
 	const findId = document.getElementById.bind(document);
 
-	// API Keys
-	const weatherApiKey = apikeys.OWM_API_KEY;
-	// const clientId = apikeys.UNSPLASH_CLIENT_ID;
-
-	// Unsplash API
-	// const unsplashUrl = `https://api.unsplash.com/photos/random?query=landscape&client_id=${clientId}`;
-	// const unsplasSourceUrl = 'https://source.unsplash.com/featured?berlin&orientation=landscape';
-
-	var weatherDataTemp;
+	let weatherDataTemp;
 
 	// Local settings defaults
 	var savedSettings = {
@@ -225,7 +224,7 @@
 		var weatherUrl;
 
 		fetchAndDisplayUserLocation(userPosLat, userPosLong, city);
-		// console.log()
+
 		weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${userPosLat}&longitude=${userPosLong}&hourly=temperature_2m,precipitation&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,windspeed_10m_max&current_weather=true&temperature_unit=${unit}&timezone=auto`;
 
 		// fetch weather data and display it
@@ -247,18 +246,20 @@
 	 */
 	function fetchAndDisplayUserLocation(lat, long, city) {
 
-		// Fetch cities from coordinates: reverse geocoding
-		var cityFromCrds = `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${long}&limit=5&appid=${weatherApiKey}`;
+		// Fetch cities from coordinates: reverse geocoding with bigdatacloud.net api
+
+		var cityFromCrds = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&${long}=-122.0837&localityLanguage=en`;
 		fetch(cityFromCrds)
 			.then(response => response.json())
 			.then(data => {
+
 				// Display user location: city and country
 				if (city) {
 					elements.locationCity.textContent = city;
 				} else {
-					elements.locationCity.textContent = data[0].name;
+					elements.locationCity.textContent = data.city;
 				}
-				elements.locationCountry.textContent = data[0].country;
+				elements.locationCountry.textContent = data.countryCode;
 
 				// Save user location city and country to storage
 				if (city) {
@@ -282,12 +283,7 @@
 					}
 				});
 
-			}).catch(function(error) {
-				// if (confirm("Oops!\nAn error occured while fetching data.\nReloading the page might fix this issue.")) {
-				// 	location.reload();
-				// } else {}
-			});
-
+			}).catch(function(error) {});
 	}
 
 	/**
@@ -302,14 +298,14 @@
 		elements.description.textContent = getIconForWeather(weatherData.current_weather.weathercode);
 
 		// Highlights
-		elements.tempMinMax.textContent = Math.round(weatherData.daily.temperature_2m_min[day], 2) + '° / ' + Math.round(weatherData.daily.temperature_2m_max[0], 2) + '°';
+		elements.tempMinMax.textContent = Math.round(weatherData.daily.temperature_2m_max[day], 2) + '° / ' + Math.round(weatherData.daily.temperature_2m_min[0], 2) + '°';
 		elements.chanceOfRain.textContent = Math.round(weatherData.daily.precipitation_sum[day], 2) + ' mm';
 
 		elements.wind.textContent = setWindSpeed(weatherData.current_weather.windspeed);
 		elements.sunriseSunset.textContent = getTimeFromTimestamp(weatherData.daily.sunrise[day]) + ' / ' + getTimeFromTimestamp(weatherData.daily.sunset[day]);
-		fetchAndSetAirQualityAndUVData();
-
-		elements.bgImg.src = 'assets/img/weather/' + weatherData.current_weather.weathercode + '.jpg';
+		fetchAndSetAirQualityAndUVData(day);
+		var weatherCode = "" + weatherData.current_weather.weathercode;
+		elements.bgImg.src = 'assets/img/weather/' + weatherCode.charAt(0) + '.jpg';
 
 		if (day === 0) {
 			createForecastList(weatherData);
@@ -335,7 +331,7 @@
 	/**
 	 * Fetches open meteo air pollution API and displays value of air pollution and uv index
 	 */
-	function fetchAndSetAirQualityAndUVData() {
+	function fetchAndSetAirQualityAndUVData(day) {
 		const airPollutionUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${savedSettings.cityLat}&longitude=${savedSettings.cityLon}&hourly=pm10,uv_index`;
 		const ratings = ['Good', 'Fair', 'Poor', 'Very poor', 'Unhealthy'];
 		let airQualityPm10;
@@ -346,7 +342,12 @@
 			.then(response => response.json())
 			.then(data => {
 
-				airQualityPm10 = data.hourly.pm10[new Date().getHours()];
+				// open meteo forecast only provides data for 4 days for uvindex and air quality
+				if (day == 5) {
+					day = 4;
+				}
+
+				airQualityPm10 = data.hourly.pm10[new Date().getHours() + (24 * day)];
 				if (airQualityPm10 < 40) {
 					airQualityRating = ratings[0];
 				} else if (airQualityPm10 >= 40 && airQualityPm10 < 80) {
@@ -360,7 +361,8 @@
 				}
 
 				elements.airquality.textContent = airQualityRating;
-				elements.uvIndex.textContent = data.hourly.uv_index[new Date().getHours()];
+				elements.uvIndex.textContent = data.hourly.uv_index[new Date().getHours() + (24 * day)];
+
 			})
 			.catch(() => {
 				console.log("Air Quality Index temporarily not available. Please try again later.");
@@ -576,23 +578,21 @@
 
 		var citySearchApi;
 		var citySearchLength = 0;
-		// Settings: City search input - fetch openweathermap api for city names
+		// Settings: City search input - fetch open-meteo api for city names
 		elements.settingsLocation.addEventListener('keyup', function() {
 			var val = this.value;
 			var valLenght = this.value.length;
-			citySearchApi = `http://api.openweathermap.org/geo/1.0/direct?q=${this.value}&limit=5&appid=${weatherApiKey}`;
+			citySearchApi = `https://geocoding-api.open-meteo.com/v1/search?name=${this.value}&count=5`;
 
 			if (valLenght > 1) {
 				fetch(citySearchApi)
 					.then(response => response.json())
 					.then(data => {
-						autocomplete(elements.settingsLocation, data, val);
+						console.log(data);
+						autocomplete(elements.settingsLocation, data.results, val);
 					})
 					.catch(() => {
-						// show confirm dialog and reload page, if an error occurs
-						// if (confirm("Oops!\nAn error occured while fetching data.\nReloading the page might fix this issue.")) {
-						// 	location.reload();
-						// }
+						console.log("error");
 					});
 			}
 		});
@@ -600,7 +600,6 @@
 		// On city selection - fetch weather for it
 		elements.settingsLocation.addEventListener('change', function() {
 			var me = this;
-
 			window.setTimeout(function() {
 				fetchWeather(savedSettings.tempMode, me.dataset.lat, me.dataset.lon, me.dataset.city);
 			}, 300);

@@ -91,7 +91,6 @@ p {
 	position: absolute;
 	right: 0;
 	transform: translateY(-10px);
-	padding: 4px 10px;
 	border-radius: 15px;
 	cursor: pointer;
 	color: #333;
@@ -105,7 +104,7 @@ p {
 	justify-content: center;
 	padding: 0;
 	width: 65px;
-	height: 22px;
+	height: 24px;
 	top: 0;
 }
 
@@ -115,7 +114,7 @@ p {
 }
 
 .heading .set_date_today.active {
-	transform: translateY(5);
+	transform: translateY(0);
 	opacity: 1;
 	pointer-events: all;
 }
@@ -141,7 +140,6 @@ p {
 
 .app .author .link {
 	color: #fff;
-	font-size: 14px;
 	text-decoration: none;
 	font-size: 12px;
 	position: absolute;
@@ -160,7 +158,6 @@ p {
 	display: flex;
 	flex-direction: row;
 	padding: 2rem;
-	margin-bottom: 5rem;
 	overflow: hidden;
 	height: 275px;
 	background-position: left center;
@@ -306,11 +303,11 @@ p {
 	top: 0px;
 }
 
-body[data-temp-mode="metric"] .app .weather .temp::after {
+body[data-temp-mode="celsius"] .app .weather .temp::after {
 	content: "\2103";
 }
 
-body[data-temp-mode="imperial"] .app .weather .temp::after {
+body[data-temp-mode="fahrenheit"] .app .weather .temp::after {
 	content: "\2109";
 }
 
@@ -330,8 +327,6 @@ body[data-temp-mode="imperial"] .app .weather .temp::after {
 	flex-wrap: wrap;
 	border-radius: 25px;
 }
-
-.app .forecast {}
 
 .app .forecast_list {
 	margin: 5px;
@@ -353,10 +348,10 @@ body[data-temp-mode="imperial"] .app .weather .temp::after {
 	display: flex;
 	align-items: center;
 	padding: 0.8em 1rem 0.8rem 4.2rem;
-	border-radius: 15px;
+	border-radius: 10px;
 	position: relative;
-	border: 2px solid transparent;
 	cursor: pointer;
+	margin-top: -1px;
 	transform: translateZ(0);
 	transition: backgroundColor .3s ease;
 }
@@ -400,8 +395,7 @@ body[data-temp-mode="imperial"] .app .weather .temp::after {
 }
 
 .app .forecast_list .day.active {
-	background: #f5f5f5;
-	border-color: #009688;
+	background: #e5e5e5;
 }
 
 .app .forecast_list .day::before {
@@ -428,6 +422,7 @@ body[data-temp-mode="imperial"] .app .weather .temp::after {
 
 .app .forecast .day_min {
 	display: inline-block;
+	font-weight: 100;
 }
 
 .app .forecast .day_max {
