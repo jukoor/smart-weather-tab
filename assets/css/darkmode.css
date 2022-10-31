@@ -4,8 +4,13 @@
 	 - Date: 01.2023
 	 - Purpose: App Darkmode Styles
 */
+/* === MAIN INTERFACE === */
 body.darkmode .app .background {
 	background: #333;
+}
+
+body.darkmode .app .heading {
+	color: #fff;
 }
 
 body.darkmode .app .details_and_forecast .col {
@@ -66,8 +71,8 @@ body.darkmode .app .forecast .day_icon {
 	filter: invert(1);
 }
 
-/* /Main Interface */
-/* Settings */
+/* /=== /MAIN INTERFACE === */
+/* === SETTINGS ===  */
 body.darkmode .settings {
 	background-color: #333;
 }
@@ -163,4 +168,10 @@ body.darkmode .autocomplete-items .listitem:hover {
 	background: #525252;
 }
 
-/* /Settings */
+@media (max-width: 767px) {
+	body.darkmode .app .settings_trigger::before {
+		background: #525252;
+	}
+}
+
+/* === /SETTINGS === */

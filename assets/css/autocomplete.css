@@ -41,6 +41,10 @@
 	font-weight: 700;
 }
 
+.autocomplete .country_item strong+span {
+	opacity: 0.7;
+}
+
 .autocomplete .country_icon {
 	width: 19px;
 	display: inline-block;

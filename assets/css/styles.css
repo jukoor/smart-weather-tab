@@ -102,10 +102,10 @@ p {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 0;
+	padding-top: 5px;
+	padding-bottom: 4px;
 	width: 65px;
-	height: 24px;
-	top: 0;
+	top: 9px;
 }
 
 .heading .set_date_today:hover {
@@ -254,6 +254,7 @@ p {
 
 .app .weather .date {
 	font-weight: 400;
+	font-size: 14px;
 }
 
 .app .weather .location {
@@ -455,17 +456,6 @@ body[data-temp-mode="fahrenheit"] .app .weather .temp::after {
 }
 
 /* === 04 RESPONSIVE === */
-@media (max-height: 820px) {
-	.app .weather {
-		gap: 30px 20px;
-	}
-
-	.app .heading {
-		font-size: 1.4rem;
-		line-height: 1;
-	}
-}
-
 @media (max-width: 1439px) {
 	.app .weather {
 		gap: 30px 20px;
@@ -479,6 +469,10 @@ body[data-temp-mode="fahrenheit"] .app .weather .temp::after {
 	.heading {
 		font-size: 1.2rem;
 		line-height: 1.2rem;
+	}
+
+	.heading .set_date_today {
+		top: 0;
 	}
 
 	.app .forecast_list .day {
@@ -536,5 +530,26 @@ body[data-temp-mode="fahrenheit"] .app .weather .temp::after {
 
 	.app .weather .box {
 		padding: 15px 5px;
+	}
+
+	.app .settings_trigger::before {
+		background: #dbdbdb;
+	}
+
+	.app .settings_outer {
+		right: 50px;
+		top: 50px;
+		bottom: auto;
+	}
+}
+
+@media (max-height: 820px) {
+	.app .weather {
+		gap: 30px 20px;
+	}
+
+	.app .heading {
+		font-size: 1.4rem;
+		line-height: 1;
 	}
 }

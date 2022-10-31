@@ -4,7 +4,6 @@
 	 - Date: 01.01.2023
 	 - Purpose: Settings Window Styles
 */
-/* Settings Trigger Button */
 /* === 04 SETTINGS === */
 .app .settings_outer {
 	position: absolute;
@@ -12,6 +11,7 @@
 	bottom: 2rem;
 	width: 30px;
 	height: 30px;
+	z-index: 2;
 }
 
 .app .settings_trigger {

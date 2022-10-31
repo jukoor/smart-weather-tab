@@ -50,13 +50,14 @@ function autocomplete(inp, arr, value) {
 
 			/*insert a input field that will hold the current array item's value:*/
 			b.innerHTML += "<input type='hidden' value='" + arr[i].name + "'>";
-
 			c.dataset.lat = arr[i].latitude;
 			c.dataset.lon = arr[i].longitude;
+			c.dataset.countryCode = arr[i].country_code;
 
 			c.addEventListener("click", function(e) {
 				inp.dataset.lat = this.dataset.lat;
 				inp.dataset.lon = this.dataset.lon;
+				inp.dataset.countryCode = this.dataset.countryCode;
 				inp.dataset.city = this.querySelector('input').value;
 
 				inp.value = this.getElementsByTagName("input")[0].value;
