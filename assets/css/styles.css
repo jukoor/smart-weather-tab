@@ -299,7 +299,7 @@ p {
 }
 
 .app .weather .temp::after {
-	content: "\2103";
+	content: "";
 	position: absolute;
 	top: 0px;
 }

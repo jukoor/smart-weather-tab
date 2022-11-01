@@ -137,7 +137,7 @@
 				// Create a new 'change' event
 				var event = new Event('change');
 				// Dispatch it.
-				elements.settingsWindBool.dispatchEvent(event);
+				elements.settingsTempBool.dispatchEvent(event);
 			} else {
 				// if there is no data, like on the first try, write default value "celsius"
 				chrome.storage.sync.set({
@@ -189,8 +189,12 @@
 					long: coordinates.longitude
 				}
 			});
+
+			savedSettings.cityLat = coordinates.latitude;
+			savedSettings.cityLon = coordinates.longitude;
+
 			// Fetch weather
-			fetchWeather(savedSettings.tempMode, coordinates.latitude, coordinates.longitude);
+			fetchWeather();
 		}
 
 		function error(err) {
@@ -200,7 +204,9 @@
 		// if user location is already known - use the one stored instead of finding it
 		chrome.storage.sync.get('userLocation', function(data) {
 			if (data.userLocation !== undefined) {
-				fetchWeather(savedSettings.tempMode, data.userLocation.lat, data.userLocation.long, savedSettings.cityName, savedSettings.countryShort);
+				savedSettings.cityLat = data.userLocation.lat;
+				savedSettings.cityLon = data.userLocation.long;
+				fetchWeather(savedSettings.cityName, savedSettings.countryShort);
 			} else {
 				navigator.geolocation.getCurrentPosition(success, error, options);
 			}
@@ -209,17 +215,14 @@
 
 	/**
 	 * Fetches WeatherData from open-meteo API
-	 * @param {string} weatherUnit - Weather unit 'celsius' or 'fahrenheit'
-	 * @param {number} lat - Location coordinates latitute
-	 * @param {number} long - Location coordinates longitude
 	 * @param {string} city - City name, selected after citysearch-autocomplete
 	 * @param {string} countryCode - 2-letter country code like "DE" for germanny
 	 */
-	function fetchWeather(weatherUnit, lat, long, city, countryCode) {
+	function fetchWeather(city, countryCode) {
 
-		var unit = weatherUnit;
-		var userPosLat = lat;
-		var userPosLong = long;
+		var unit = savedSettings.tempMode;
+		var userPosLat = savedSettings.cityLat;
+		var userPosLong = savedSettings.cityLon;
 		var weatherUrl;
 
 		fetchAndDisplayUserLocation(userPosLat, userPosLong, city, countryCode);
@@ -229,12 +232,10 @@
 		// fetch weather API only once per day to minimize API calls
 		// use stored weather object if its not older than a day
 		chrome.storage.sync.get('weatherDataFetchedTimestamp', function(data) {
-
 			if (data.weatherDataFetchedTimestamp !== undefined) {
 				// value is set
 
 				var oneDayInMilliseconds = 86400000;
-
 				// do once per day
 				if (Date.now() - data.weatherDataFetchedTimestamp > oneDayInMilliseconds) {
 					// more than 1 day since last fetch -> fetch new weather data from API
@@ -252,17 +253,16 @@
 								weatherDataFetchedTimestamp: Date.now()
 							});
 
-
-							displayWeather(data, 0, weatherUnit);
+							displayWeather(data, 0);
 							weatherDataTemp = data;
 							document.body.dataset.tempMode = unit;
 						}).catch(function(error) {
 							console.log(error);
 						});
-				} else {
+				} else if (data.weatherDataFetchedTimestamp == 0) {} else {
 					// shorter than 1 day since last fetch - use data stored in chrome storage
 					chrome.storage.sync.get('weatherData', function(data) {
-						displayWeather(data.weatherData, 0, weatherUnit);
+						displayWeather(data.weatherData, 0);
 
 						weatherDataTemp = data.weatherData;
 						document.body.dataset.tempMode = unit;
@@ -368,7 +368,7 @@
 	 * @param {Object} weatherData - Fetched weather data object containing current condition and 8 days forecast
 	 * @param {number} day - Number of day in the week starting at zero to fetch weather for that day
 	 */
-	function displayWeather(weatherData, day, weatherUnit) {
+	function displayWeather(weatherData, day) {
 
 		// Current weather condition
 		elements.temp.textContent = Math.round(weatherData.current_weather.temperature, 2);
@@ -683,7 +683,15 @@
 				savedSettings.cityLat = me.dataset.lat;
 				savedSettings.cityLon = me.dataset.lon;
 
-				fetchWeather(savedSettings.tempMode, me.dataset.lat, me.dataset.lon, me.dataset.city, me.dataset.countryCode);
+				// Save selected value to chrome storage
+				chrome.storage.sync.set({
+					userLocation: {
+						lat: me.dataset.lat,
+						long: me.dataset.lon
+					}
+				});
+
+				fetchWeather(me.dataset.city, me.dataset.countryCode);
 			}, 300);
 		});
 
@@ -696,7 +704,11 @@
 				savedSettings.tempMode = 'fahrenheit';
 			}
 
-			fetchWeather(savedSettings.tempMode, savedSettings.cityLat, savedSettings.cityLon);
+			// reset fetch-weather-timestamp
+			chrome.storage.sync.set({
+				weatherDataFetchedTimestamp: 0
+			});
+			fetchWeather();
 
 			// Save selected value to chrome storage
 			chrome.storage.sync.set({
