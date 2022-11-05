@@ -163,7 +163,7 @@
 		const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 		var today = new Date();
 		var day = today.getDay();
-		var fullDate = today.getDate() + ', ' + months[(today.getMonth())] + ' ' + today.getFullYear();
+		var fullDate = today.getDate() + ', ' + months[(today.getMonth())].substring(0, 3) + ' ' + today.getFullYear();
 
 		elements.date.textContent = weekdays[day - 1] + " " + fullDate;
 	}
@@ -194,6 +194,7 @@
 			savedSettings.cityLon = coordinates.longitude;
 
 			// Fetch weather
+			console.log("fetching from user pos");
 			fetchWeather();
 		}
 
@@ -229,20 +230,20 @@
 
 		weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${userPosLat}&longitude=${userPosLong}&hourly=temperature_2m,precipitation&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,windspeed_10m_max&current_weather=true&temperature_unit=${unit}&timezone=auto`;
 
-		// fetch weather API only once per day to minimize API calls
+		// fetch weather API only once per hour to minimize API calls
 		// use stored weather object if its not older than a day
 		chrome.storage.sync.get('weatherDataFetchedTimestamp', function(data) {
 			if (data.weatherDataFetchedTimestamp !== undefined) {
-				// value is set
 
-				var oneDayInMilliseconds = 86400000;
-				// do once per day
-				if (Date.now() - data.weatherDataFetchedTimestamp > oneDayInMilliseconds) {
-					// more than 1 day since last fetch -> fetch new weather data from API
+				var oneHourInMilliseconds = 3600000;
+
+				// do once per hour
+				if ((Date.now() - data.weatherDataFetchedTimestamp) > oneHourInMilliseconds) {
+					// more than 1 hour since last fetch -> fetch new weather data from API
+
 					fetch(weatherUrl)
 						.then(response => response.json())
 						.then(data => {
-
 							// store fetched weather data  in chrome storage
 							chrome.storage.sync.set({
 								weatherData: data
@@ -284,7 +285,7 @@
 							weatherDataFetchedTimestamp: Date.now()
 						});
 
-						displayWeather(data, 0, weatherUnit);
+						displayWeather(data, 0);
 						weatherDataTemp = data;
 						document.body.dataset.tempMode = unit;
 					}).catch(function(error) {
@@ -375,7 +376,7 @@
 		elements.description.textContent = getIconForWeather(weatherData.current_weather.weathercode);
 
 		// Highlights
-		elements.tempMinMax.textContent = Math.round(weatherData.daily.temperature_2m_max[day], 2) + '° / ' + Math.round(weatherData.daily.temperature_2m_min[0], 2) + '°';
+		elements.tempMinMax.textContent = Math.round(weatherData.daily.temperature_2m_max[day], 2) + '° / ' + Math.round(weatherData.daily.temperature_2m_min[day], 2) + '°';
 		elements.chanceOfRain.textContent = Math.round(weatherData.daily.precipitation_sum[day], 2) + ' mm';
 
 		elements.wind.textContent = setWindSpeed(weatherData.daily.windspeed_10m_max[day]);
@@ -676,6 +677,7 @@
 			var me = this;
 			window.setTimeout(function() {
 				// reset fetch-weather-timestamp
+
 				chrome.storage.sync.set({
 					weatherDataFetchedTimestamp: 0
 				});
@@ -696,7 +698,7 @@
 		});
 
 		// Settings: Temperature mode; true: 'celsius', false: 'fahrenheit'
-		elements.settingsTempBool.addEventListener('change', function() {
+		elements.settingsTempBool.addEventListener('change', function(e) {
 			var checked = this.checked;
 			if (this.checked) {
 				savedSettings.tempMode = 'celsius';
@@ -704,11 +706,13 @@
 				savedSettings.tempMode = 'fahrenheit';
 			}
 
-			// reset fetch-weather-timestamp
-			chrome.storage.sync.set({
-				weatherDataFetchedTimestamp: 0
-			});
-			fetchWeather();
+			// reset fetch-weather-timestamp if event is triggered by human interaction
+			if (e.isTrusted) {
+				chrome.storage.sync.set({
+					weatherDataFetchedTimestamp: 0
+				});
+				fetchWeather();
+			}
 
 			// Save selected value to chrome storage
 			chrome.storage.sync.set({

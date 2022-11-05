@@ -49,33 +49,25 @@ p {
 	height: 100vh;
 	overflow: hidden;
 	background: whitesmoke;
-	/* display: flex; */
 }
 
-.app .video_container {
-	position: absolute;
-	height: 100%;
-	width: 100%;
-	overflow: hidden;
+.app .background::-webkit-scrollbar {
+	width: 10px;
 }
 
-.app .video_container {
-	position: absolute;
-	height: 100%;
-	width: 100%;
-	overflow: hidden;
-	left: 0;
-	top: 0;
+.app .background::-webkit-scrollbar-track {
+	background: #f1f1f1;
 }
 
-.app .video {
-	object-fit: cover;
-	object-position: center;
-	height: 100%;
-	width: 100%;
+.app .background::-webkit-scrollbar-thumb {
+	background: #888;
 }
 
-.heading {
+.app .background::-webkit-scrollbar-thumb:hover {
+	background: #555;
+}
+
+.app .heading {
 	font-size: 2rem;
 	line-height: 2rem;
 	font-weight: 700;
@@ -84,7 +76,7 @@ p {
 	padding-left: 5px;
 }
 
-.heading .set_date_today {
+.app .heading .set_date_today {
 	font-weight: 700;
 	font-size: 12px;
 	line-height: 1;
@@ -108,12 +100,12 @@ p {
 	top: 9px;
 }
 
-.heading .set_date_today:hover {
+.app .heading .set_date_today:hover {
 	background: #009688;
 	color: #fff;
 }
 
-.heading .set_date_today.active {
+.app .heading .set_date_today.active {
 	transform: translateY(0);
 	opacity: 1;
 	pointer-events: all;
@@ -519,27 +511,23 @@ body[data-temp-mode="fahrenheit"] .app .weather .temp::after {
 	}
 
 	.app .weather {
-		display: flex;
-		flex-direction: column;
-		margin: 50px 0;
+		display: block;
+		top: 0;
+		transform: none;
+		margin: 25px 0;
 	}
 
 	.app .weather .current_weather {
 		margin: 0;
+		margin-bottom: 25px;
+	}
+
+	.app .weather .current_details {
+		margin-bottom: 25px;
 	}
 
 	.app .weather .box {
 		padding: 15px 5px;
-	}
-
-	.app .settings_trigger::before {
-		background: #dbdbdb;
-	}
-
-	.app .settings_outer {
-		right: 50px;
-		top: 50px;
-		bottom: auto;
 	}
 }
 

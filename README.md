@@ -20,7 +20,7 @@ Reverse geocoding is provided by [BigDataCloud API](https://www.bigdatacloud.com
 - 5 days forecast with detail-view
 - Dynamic background images depending on weather condition
 - Settings for weather unit conversion (metric/imperial) and darkmode
-- Weather data updates only once a day to save bandwidth and API calls
+- Weather data updates only once per hour to save bandwidth and API calls
 
 ## Download
 

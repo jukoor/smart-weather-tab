@@ -11,7 +11,7 @@
 	bottom: 2rem;
 	width: 30px;
 	height: 30px;
-	z-index: 2;
+	z-index: 4;
 }
 
 .app .settings_trigger {
@@ -128,7 +128,7 @@
 	height: 100vh;
 	left: 0;
 	background: hsl(0deg 0% 0% / 60%);
-	z-index: 2;
+	z-index: 3;
 	opacity: 0;
 	/* transition: backdrop-filter .5s linear, opacity .5s linear; */
 	pointer-events: none;
@@ -464,4 +464,26 @@
 	font-size: 16px;
 	color: #333;
 	opacity: 0.5;
+}
+
+@media (max-height: 820px) {
+	.app .settings_outer {
+		right: 50px;
+		top: 50px;
+		bottom: auto;
+	}
+
+	.app .settings_trigger::before {
+		background: #dbdbdb;
+	}
+}
+
+@media (max-width: 767px) {
+	.app .settings {
+		width: 400px;
+	}
+
+	.app .settings .custom_input {
+		width: 207px;
+	}
 }
