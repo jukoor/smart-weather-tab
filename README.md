@@ -1,14 +1,14 @@
-# Smart Weather Tab
+# Smart Weather Tab Chrome Extension
 
 ## About
 
-Smart Weather Tab is a Google Chrome extension that displays the weather in a beautiful way in your new tab window.
+Smart Weather Tab is a Google Chrome extension that displays the weather in a beautiful way in the new tab window. It is written in vanilla JS.
 The user can either enter a city or use the current location to display the latest weather data.
-Data shown includes the current situation, highlights of today, as well as a 5-day weather forecast.  
+Data shown includes the current situation, highlights of today, as well as a 5-day weather forecast.
 
 Different settings for interface or units let you personalize the application.
 Depending on the weather condition, changing background images are displayed.
-For each day in the 5-day list details can be displayed by clicking it.  
+For each day in the 5-day list details can be displayed by clicking it.
 
 Weather data is provided by [Open-Meteo API](https://open-meteo.com).
 Reverse geocoding is provided by [BigDataCloud API](https://www.bigdatacloud.com/).
@@ -22,12 +22,10 @@ Reverse geocoding is provided by [BigDataCloud API](https://www.bigdatacloud.com
 - Settings for weather unit conversion (metric/imperial) and darkmode
 - Weather data updates only once per hour to save bandwidth and API calls
 
-## Download
+## Install
 
-Smart Weather Tab is available for free and can be downloaded here.
+Smart Weather Tab is available for free and can be added as Chrome Extension [here](https://chromewebstore.google.com/detail/smart-weather-tab/lnfldngdiclidmechejodobpppcacjjl?hl=de).
 
-## Roadmap
+## Run locally
 
-- Add random images by weather condition from Unsplash API
-- Add detail-view to highlight boxes
-- Let user save multiple locations
+To run Smart Weather Tab on your local machine you need to clone this repo and follow the steps [in this tutorial](https://medium.com/@aabroo.jalil/how-to-test-a-chrome-extension-locally-step-by-step-guide-852e4622d4c7) on how to load chrome extension locally.
